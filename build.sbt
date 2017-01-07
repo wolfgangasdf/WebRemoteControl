@@ -7,14 +7,13 @@ version := "0.1-SNAPSHOT"
 scalaVersion := "2.12.1"
 scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation", "-encoding", "UTF-8")
 
-//unmanagedResourceDirectories in Compile += { baseDirectory.value / "public/" }
-
 assemblyJarName in assembly := "webremotecontrol.jar"
 
 resolvers ++= Seq(
 )
 libraryDependencies ++= Seq(
-  "org.java-websocket" % "Java-WebSocket" % "1.3.0"
+  "org.java-websocket" % "Java-WebSocket" % "1.3.0",
+  "org.webjars" % "hammerjs" % "2.0.6"
 )
 
 lazy val root = (project in file(".")).

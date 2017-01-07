@@ -22,7 +22,7 @@ class SimpleHttpServer(private var port: Int) {
       if (requestURI.length == 0) requestURI = "index.html"
       val headers = t.getResponseHeaders
       headers.add("Content-Type", detectContentType(requestURI))
-      val is = getClass.getResourceAsStream("/public/" + requestURI)
+      val is = getClass.getResourceAsStream(requestURI)
       if (is != null) {
         val bis = new BufferedInputStream(is)
         val content = try {
