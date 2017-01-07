@@ -1,11 +1,5 @@
-//import java.awt.AWTException
-import java.awt.{Robot, Toolkit}
-import java.awt.datatransfer.{Clipboard, StringSelection}
+import java.awt.Robot
 import java.awt.event.{InputEvent, KeyEvent}
-//import java.awt.event.KeyEvent
-//import java.io.Console
-//remove if not needed
-//import scala.collection.JavaConversions._
 
 class RobotHandle {
 
@@ -23,12 +17,8 @@ class RobotHandle {
 
   robot.setAutoWaitForIdle(true)
 
-  def move(x: Int, 
-      y: Int, 
-      clientWidth: Int, 
-      clientHeight: Int) {
-    robotMove(NormalizeInput.mapValue(x, clientWidth, screenWidth), NormalizeInput.mapValue(y, clientHeight, 
-      screenHeight))
+  def move(x: Int, y: Int, clientWidth: Int, clientHeight: Int) {
+    robotMove(NormalizeInput.mapValue(x, clientWidth, screenWidth), NormalizeInput.mapValue(y, clientHeight, screenHeight))
   }
 
   def tap() {

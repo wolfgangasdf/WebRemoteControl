@@ -7,6 +7,7 @@ import org.java_websocket.server.WebSocketServer
 object WebRemoteControl {
 
   def main(args: Array[String]) {
+    println(s"Starting ${buildinfo.BuildInfo.name} ${buildinfo.BuildInfo.version} built ${buildinfo.BuildInfo.buildTime}")
     val simpleHttpServerPort = 8000
     val webSocketPort = 8001
     new SimpleHttpServer(simpleHttpServerPort).start()

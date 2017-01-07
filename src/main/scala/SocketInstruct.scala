@@ -11,10 +11,6 @@ class SocketInstruct {
 
   private var clientScreenHeight: Int = 0
 
-//  private var x: Int = _
-//
-//  private var y: Int = _
-
   def instruct(message: String) {
     instructions = message.split(",")
     inputKind = instructions(0)

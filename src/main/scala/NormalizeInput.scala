@@ -1,14 +1,9 @@
 import java.awt.Dimension
 import java.awt.Toolkit
-//remove if not needed
-//import scala.collection.JavaConversions._
 
 object NormalizeInput {
 
-  private def getScreenSize: Dimension = {
-    val screenSize = Toolkit.getDefaultToolkit.getScreenSize
-    screenSize
-  }
+  private def getScreenSize: Dimension = Toolkit.getDefaultToolkit.getScreenSize
 
   def getWidth: Int = getScreenSize.width
 
