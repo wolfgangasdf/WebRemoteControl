@@ -52,21 +52,32 @@ class RobotHandle {
   }
 
   def clickKey(keycode: Int): Unit = {
+    println("robot: click " + keycode)
     robot.keyPress(keycode)
     robot.keyRelease(keycode)
   }
 
   def typeText(text: String): Unit = {
+    println("robot: type [" + text + "]")
     // http://stackoverflow.com/a/29665705
-    // or try http://stackoverflow.com/questions/15260282/converting-a-char-into-java-keyevent-keycode
-    val stringSelection = new StringSelection(text)
-    val clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
-    clipboard.setContents(stringSelection, stringSelection)
+//    val stringSelection = new StringSelection(text)
+//    val clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
+//    clipboard.setContents(stringSelection, stringSelection)
+//
+//    robot.keyPress(KeyEvent.VK_CONTROL)
+//    robot.keyPress(KeyEvent.VK_V)
+//    robot.keyRelease(KeyEvent.VK_V)
+//    robot.keyRelease(KeyEvent.VK_CONTROL)
 
-    robot.keyPress(KeyEvent.VK_CONTROL)
-    robot.keyPress(KeyEvent.VK_V)
-    robot.keyRelease(KeyEvent.VK_V)
-    robot.keyRelease(KeyEvent.VK_CONTROL)
+    // http://stackoverflow.com/questions/15260282/converting-a-char-into-java-keyevent-keycode
+    for (ch <- text) {
+      val keyCode = KeyEvent.getExtendedKeyCodeForChar(ch)
+      println(" keycode: " + keyCode + " xxx " + KeyEvent.VK_A)
+      robot.keyPress(keyCode)
+      robot.delay(10)
+      robot.keyRelease(keyCode)
+      robot.delay(50)
+    }
   }
 
   private def robotMove(x: Int, y: Int) {

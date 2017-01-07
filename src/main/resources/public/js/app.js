@@ -146,15 +146,14 @@ window.onload = function(){
       }
     }
 
-    document.getElementById('bleft').onclick = function(event) {
+    document.getElementById('bleft').addEventListener('click', function() {
         queue.push("key,37")
-    }
-    document.getElementById('bright').onclick = function(event) {
+    }, false);
+    document.getElementById('bright').addEventListener('click', function() {
         queue.push("key,39")
-    }
-    document.getElementById('bspace').onclick = function(event) {
+    }, false);
+    document.getElementById('bspace').addEventListener('click', function() {
         queue.push("key,32")
-    }
-
+    }, false);
 
 }
