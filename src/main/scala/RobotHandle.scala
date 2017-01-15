@@ -44,6 +44,7 @@ class RobotHandle {
   def clickKey(keycode: Int): Unit = {
     println("robot: click " + keycode)
     robot.keyPress(keycode)
+    robot.delay(10)
     robot.keyRelease(keycode)
   }
 
