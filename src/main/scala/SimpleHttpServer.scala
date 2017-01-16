@@ -2,8 +2,9 @@ import java.io.BufferedInputStream
 import java.net.{InetAddress, InetSocketAddress}
 
 import com.sun.net.httpserver.{HttpExchange, HttpHandler, HttpServer}
+import com.typesafe.scalalogging.LazyLogging
 
-class SimpleHttpServer(private var port: Int) {
+class SimpleHttpServer(private var port: Int) extends LazyLogging {
 
   private class GetHandler extends HttpHandler {
 
@@ -33,7 +34,7 @@ class SimpleHttpServer(private var port: Int) {
         os.write(content, 0, content.length)
         os.close()
       } else {
-        println("file not found: " + requestURI)
+        logger.error("file not found: " + requestURI)
         val response = "File not found :("
         t.sendResponseHeaders(400, -1)
         val os = t.getResponseBody
@@ -49,6 +50,6 @@ class SimpleHttpServer(private var port: Int) {
 
   def start() {
     server.start()
-    println(s"Server listening on ${InetAddress.getLocalHost.getHostAddress }:$port")
+    logger.info(s"Server listening on ${InetAddress.getLocalHost.getHostAddress }:$port")
   }
 }

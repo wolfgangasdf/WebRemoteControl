@@ -1,5 +1,6 @@
+import com.typesafe.scalalogging.LazyLogging
 
-class SocketInstruct {
+class SocketInstruct extends LazyLogging {
 
   private val robotHandle: RobotHandle = new RobotHandle()
 
@@ -12,6 +13,7 @@ class SocketInstruct {
   private var clientScreenHeight: Int = 0
 
   def instruct(message: String) {
+    logger.debug("instruct: " + message)
     instructions = message.split(",")
     inputKind = instructions(0)
     inputKind match {
@@ -25,10 +27,10 @@ class SocketInstruct {
       case "text" => typeText(instructions.drop(1).mkString(","))
       case "key" => clickKey(java.lang.Integer.parseInt(instructions(1)))
       case "exit" =>
-        println("exit")
+        logger.info("exit")
         System.exit(0)
 
-      case _ => println("invalid instruction")
+      case _ => logger.error("invalid instruction")
     }
   }
 
@@ -66,6 +68,7 @@ class SocketInstruct {
   }
 
   private def clickKey(keycode: Int): Unit = {
+    logger.debug("click key " + keycode)
     robotHandle.clickKey(keycode)
   }
 }

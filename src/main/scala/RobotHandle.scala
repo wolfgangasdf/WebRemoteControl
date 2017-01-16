@@ -1,7 +1,9 @@
 import java.awt.Robot
 import java.awt.event.{InputEvent, KeyEvent}
 
-class RobotHandle {
+import com.typesafe.scalalogging.LazyLogging
+
+class RobotHandle extends LazyLogging {
 
   private val robot: Robot = new Robot()
 
@@ -42,14 +44,14 @@ class RobotHandle {
   }
 
   def clickKey(keycode: Int): Unit = {
-    println("robot: click " + keycode)
+    logger.debug("robot: click " + keycode)
     robot.keyPress(keycode)
     robot.delay(10)
     robot.keyRelease(keycode)
   }
 
   def typeText(text: String): Unit = {
-    println("robot: type [" + text + "]")
+    logger.debug("robot: type [" + text + "]")
     // http://stackoverflow.com/a/29665705
 //    val stringSelection = new StringSelection(text)
 //    val clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
@@ -63,7 +65,7 @@ class RobotHandle {
     // http://stackoverflow.com/questions/15260282/converting-a-char-into-java-keyevent-keycode
     for (ch <- text) {
       val keyCode = KeyEvent.getExtendedKeyCodeForChar(ch)
-      println(" keycode: " + keyCode + " xxx " + KeyEvent.VK_A)
+      logger.debug(" keycode: " + keyCode + " xxx " + KeyEvent.VK_A)
       robot.keyPress(keyCode)
       robot.delay(10)
       robot.keyRelease(keyCode)
