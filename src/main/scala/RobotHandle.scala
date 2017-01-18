@@ -1,4 +1,4 @@
-import java.awt.Robot
+import java.awt.{Dimension, MouseInfo, Robot, Toolkit}
 import java.awt.event.{InputEvent, KeyEvent}
 
 import com.typesafe.scalalogging.LazyLogging
@@ -7,20 +7,37 @@ class RobotHandle extends LazyLogging {
 
   private val robot: Robot = new Robot()
 
-  private val screenWidth: Int = NormalizeInput.getWidth
+  private def getScreenSize: Dimension = Toolkit.getDefaultToolkit.getScreenSize
+  private val screenWidth: Int = getScreenSize.width
+  private val screenHeight: Int = getScreenSize.height
+  private var currX = MouseInfo.getPointerInfo.getLocation.x
+  private var currY = MouseInfo.getPointerInfo.getLocation.y
+  private var oldClientX = -1
+  private var oldClientY = -1
+  val clientScale = 1.5
 
-  private val screenHeight: Int = NormalizeInput.getHeight
-
-  val instructions: Array[String] = null
-
-  val coordinates: Array[Int] = Array.ofDim[Int](2)
+  def newMappedValue(oldpos: Int, clientMove: Int, clientDimension: Int, clientScale: Double, screenDimension: Int): Int = {
+    val rel = ((screenDimension * clientMove) / (clientDimension * clientScale)).toInt
+    var res = oldpos + rel
+    if (res < 0) res = 0
+    if (res > screenDimension) res = screenDimension
+    res
+  }
 
   robot.setAutoDelay(40)
 
   robot.setAutoWaitForIdle(true)
 
-  def move(x: Int, y: Int, clientWidth: Int, clientHeight: Int) {
-    robotMove(NormalizeInput.mapValue(x, clientWidth, screenWidth), NormalizeInput.mapValue(y, clientHeight, screenHeight))
+  // now relative coordinates!
+  def moveRel(x: Int, y: Int, clientWidth: Int, clientHeight: Int) {
+
+    currX = newMappedValue(currX, x - oldClientX, clientWidth, clientScale, screenWidth)
+    oldClientX = x
+//    logger.debug(s"clientWidth=$clientWidth screenWidth=$screenWidth x=$x currX=$currX")
+    currY = newMappedValue(currY, y - oldClientY, clientHeight, clientScale, screenHeight)
+    oldClientY = y
+//    logger.debug(s"clientH=$clientHeight screenH=$screenHeight y=$y currY=$currY")
+    robotMoveAbs(currX, currY)
   }
 
   def tap() {
@@ -73,7 +90,7 @@ class RobotHandle extends LazyLogging {
     }
   }
 
-  private def robotMove(x: Int, y: Int) {
+  private def robotMoveAbs(x: Int, y: Int) {
     robot.delay(10)
     robot.mouseMove(x, y)
   }

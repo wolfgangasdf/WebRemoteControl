@@ -35,7 +35,7 @@ class SocketInstruct extends LazyLogging {
   }
 
   private def move(x: Int, y: Int) {
-    robotHandle.move(x, y, clientScreenWidth, clientScreenHeight)
+    robotHandle.moveRel(x, y, clientScreenWidth, clientScreenHeight)
   }
 
   private def tap() {

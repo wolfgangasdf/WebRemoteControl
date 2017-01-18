@@ -59,14 +59,7 @@ window.onload = function(){
     prevDeltaX = ev.deltaX;
     prevDeltaY = ev.deltaY;
 
-    if (x <= 0) x = 0;
-    if (x >= width) x = width;
-    if (y <= 0) y = 0;
-    if (y >= height) y = height;
-
-
     if(canEmit){
-      //socket.send('move,' + x + ',' + y);
       queue.push('move,' + x + ',' + y);
       canEmit = false;
       setTimeout(function(){
@@ -79,7 +72,6 @@ window.onload = function(){
     scrollAmount = ev.deltaY + (prevScrollAmount*-1);
     prevScrollAmount = ev.deltaY;
     if(canEmit){
-      //socket.send('scroll,' + scrollAmount);
       queue.push('scroll,' + scrollAmount);
       canEmit = false;
       setTimeout(function(){
@@ -89,7 +81,6 @@ window.onload = function(){
   });
 
   hammer.on('dragstart', function(ev) {
-    //socket.send('dragStart');
     queue.push('dragStart');
   });
 
@@ -100,14 +91,7 @@ window.onload = function(){
     prevDeltaX = ev.deltaX;
     prevDeltaY = ev.deltaY;
 
-    if (x <= 0) x = 0;
-    if (x >= width) x = width;
-    if (y <= 0) y = 0;
-    if (y >= height) y = height;
-
-
     if(canEmit){
-      //socket.send('move,' + x + ',' + y);
       queue.push('move,' + x + ',' + y);
       canEmit = false;
       setTimeout(function(){
@@ -117,7 +101,6 @@ window.onload = function(){
   });
 
   hammer.on('dragend', function(ev) {
-    //socket.send('dragEnd');
     queue.push('dragEnd');
   });
 
@@ -131,12 +114,10 @@ window.onload = function(){
   });
 
   hammer.on('tap', function(ev) {
-    //socket.send('tap');
     queue.push('tap');
   });
 
   hammer.on('secondaryTap', function(ev) {
-    //socket.send('tap2');
     queue.push('tap2');
   });
 
