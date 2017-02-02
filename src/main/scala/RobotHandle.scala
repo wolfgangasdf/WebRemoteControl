@@ -14,42 +14,49 @@ class RobotHandle extends LazyLogging {
   private var currY = MouseInfo.getPointerInfo.getLocation.y
   private var oldClientX = -1
   private var oldClientY = -1
-  val clientScale = 1.5
-
-  def newMappedValue(oldpos: Int, clientMove: Int, clientDimension: Int, clientScale: Double, screenDimension: Int): Int = {
-    val rel = ((screenDimension * clientMove) / (clientDimension * clientScale)).toInt
-    var res = oldpos + rel
-    if (res < 0) res = 0
-    if (res > screenDimension) res = screenDimension
-    res
-  }
+  val clientScale = 1.5 // 1.5 means that you have to move 1.5 times the client dimension to move over full server dimension
 
   robot.setAutoDelay(40)
 
   robot.setAutoWaitForIdle(true)
 
+  def coerce(x: Int, min: Int, max: Int): Int = {
+    if (x < min) min
+    else if (x > max) max
+    else x
+  }
   // now relative coordinates!
   def moveRel(x: Int, y: Int, clientWidth: Int, clientHeight: Int) {
-
-    currX = newMappedValue(currX, x - oldClientX, clientWidth, clientScale, screenWidth)
+    // make movement proportional in x,y!
+    val rel = scala.math.min(screenWidth / (clientWidth * clientScale), screenHeight / (clientHeight * clientScale))
+    val relX = ((x - oldClientX) * rel).toInt
+    currX = coerce(currX + relX, 0, screenWidth)
     oldClientX = x
-//    logger.debug(s"clientWidth=$clientWidth screenWidth=$screenWidth x=$x currX=$currX")
-    currY = newMappedValue(currY, y - oldClientY, clientHeight, clientScale, screenHeight)
+
+    val relY = ((y - oldClientY) * rel).toInt
+    currY = coerce(currY + relY, 0, screenHeight)
     oldClientY = y
-//    logger.debug(s"clientH=$clientHeight screenH=$screenHeight y=$y currY=$currY")
+
     robotMoveAbs(currX, currY)
   }
 
   def tap() {
-    robotLeftClick()
+    robotPressLeftButton()
+    robot.delay(25)
+    robotReleaseLeftButton()
+    robot.delay(25)
   }
 
   def secondaryTap() {
-    robotRightClick()
+    robot.mousePress(InputEvent.BUTTON3_MASK)
+    robot.delay(25)
+    robot.mouseRelease(InputEvent.BUTTON3_MASK)
+    robot.delay(25)
   }
 
   def scroll(amount: Int) {
-    robotScroll(amount)
+    robot.delay(40)
+    robot.mouseWheel(amount)
   }
 
   def pressLeftButton() {
@@ -103,22 +110,4 @@ class RobotHandle extends LazyLogging {
     robot.mouseRelease(InputEvent.BUTTON1_MASK)
   }
 
-  private def robotLeftClick() {
-    robotPressLeftButton()
-    robot.delay(25)
-    robotReleaseLeftButton()
-    robot.delay(25)
-  }
-
-  private def robotRightClick() {
-    robot.mousePress(InputEvent.BUTTON3_MASK)
-    robot.delay(25)
-    robot.mouseRelease(InputEvent.BUTTON3_MASK)
-    robot.delay(25)
-  }
-
-  private def robotScroll(amount: Int) {
-    robot.delay(40)
-    robot.mouseWheel(amount)
-  }
 }
