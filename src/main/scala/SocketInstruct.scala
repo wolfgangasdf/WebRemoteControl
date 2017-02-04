@@ -25,6 +25,7 @@ class SocketInstruct extends LazyLogging {
       case "dragEnd" => releaseLeftButton()
       case "scroll" => scroll(java.lang.Integer.parseInt(instructions(1)))
       case "text" => typeText(instructions.drop(1).mkString(","))
+      case "debug" => logger.debug("JS: " + instructions.drop(1).mkString(","))
       case "key" => clickKey(java.lang.Integer.parseInt(instructions(1)))
       case "exit" =>
         logger.info("exit")
