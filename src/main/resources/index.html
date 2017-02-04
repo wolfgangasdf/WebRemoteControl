@@ -6,23 +6,28 @@
     <link rel="stylesheet" href="/css/app.css" type="text/css">
   </head>
   <body>
-    <div class="inputrow">
-      <select class="menu" id="menu">
-        <option value="trackpad-area">trackpad</option>
-        <option value="content_2">cursor</option>
-        <option value="content_3">Option 3</option>
-      </select>
-      <input type="text" value="" id="textinput" placeholder="send text...">
-      <button id="bleft" class="buttons"><-</button>
-      <button id="bspace" class="buttons">spc</button>
-      <button id="bright" class="buttons">-></button>
-    </div>
+  <div class="inputrow">
+    <select class="menu" id="menu">
+      <option value="trackpad-area">trackpad</option>
+      <option value="content_2">cursor</option>
+      <option value="content_3">Option 3</option>
+    </select>
+    <input type="text" value="" id="textinput" placeholder="send text...">
+    <button id="bleft" class="buttons"><-</button>
+    <button id="bspace" class="buttons">spc</button>
+    <button id="bright" class="buttons">-></button>
+  </div>
+  <div class="inputrow">
+    <button id="bescape" class="buttons">esc</button>
+    <button id="bf" class="buttons">F</button>
+    <button id="bup" class="buttons">up</button>
+    <button id="bdown" class="buttons">do</button>
+  </div>
     <div class="content">
       <div id="trackpad-area" class="_vis_ trackpad-area"></div>
       <div id="content_2" class="_inv_">Content 2</div>
       <div id="content_3" class="_inv_">Content 3</div>
     </div>
-
     <script src="META-INF/resources/webjars/hammerjs/2.0.6/hammer.min.js"></script>
     <script src="/js/app.js"></script>
   </body>

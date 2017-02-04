@@ -1,6 +1,7 @@
 window.onload = function(){
     var socket = new WebSocket("ws://" + window.location.hostname + ":8001");
     var hammer = null;
+    var queue = [];
 
     loadtrackpad = function(){
       var trackpad = document.getElementById('trackpad-area');
@@ -17,8 +18,6 @@ window.onload = function(){
       var prevScrollAmount = 0;
       var clearDelta;
       var canEmit = true;
-
-      var queue = [];
 
       setInterval(function(){
         var toEmit = queue.shift()
@@ -142,8 +141,20 @@ window.onload = function(){
     document.getElementById('bright').addEventListener('click', function() {
         queue.push("key,39")
     }, false);
+    document.getElementById('bup').addEventListener('click', function() {
+        queue.push("key,38")
+    }, false);
+    document.getElementById('bdown').addEventListener('click', function() {
+        queue.push("key,40")
+    }, false);
     document.getElementById('bspace').addEventListener('click', function() {
         queue.push("key,32")
+    }, false);
+    document.getElementById('bescape').addEventListener('click', function() {
+        queue.push("key,27")
+    }, false);
+    document.getElementById('bf').addEventListener('click', function() {
+        queue.push("key,70")
     }, false);
 
     document.getElementById('menu').addEventListener('change', function () {
