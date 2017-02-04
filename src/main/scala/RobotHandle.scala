@@ -27,8 +27,9 @@ class RobotHandle extends LazyLogging {
   }
   // now relative coordinates!
   def moveRel(x: Int, y: Int, clientWidth: Int, clientHeight: Int) {
-    // make movement proportional in x,y!
-    val rel = scala.math.min(screenWidth / (clientWidth * clientScale), screenHeight / (clientHeight * clientScale))
+    // make movement same in x,y!
+    // val rel = scala.math.min(screenWidth / (clientWidth * clientScale), screenHeight / (clientHeight * clientScale))
+    val rel = 2.0 // isn't this better (tab/phone)?
     val relX = ((x - oldClientX) * rel).toInt
     currX = coerce(currX + relX, 0, screenWidth)
     oldClientX = x
