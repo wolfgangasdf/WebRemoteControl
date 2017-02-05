@@ -26,9 +26,18 @@ class SimpleHttpServer(private var port: Int) extends LazyLogging {
       val is = getClass.getResourceAsStream(requestURI)
       if (is != null) {
         val bis = new BufferedInputStream(is)
-        val content = try {
+        var content = try {
           Stream.continually(bis.read).takeWhile(-1 != _).map(_.toByte).toArray
         } finally bis.close()
+
+        // possibly replace websockets port
+        if (requestURI.endsWith("app.js") && WebRemoteControl.webSocketPort != 8001) {
+          val charset = "UTF-8"
+          var s = new String(content, charset)
+          s = s.replaceFirst(":8001", s":${WebRemoteControl.webSocketPort}")
+          content = s.getBytes(charset)
+        }
+
         t.sendResponseHeaders(200, content.length)
         val os = t.getResponseBody
         os.write(content, 0, content.length)

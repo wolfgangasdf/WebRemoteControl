@@ -1,11 +1,10 @@
-* { margin: 0; padding: 0; }
-body { width:100vw; height:100vh; padding:5px; background-color:#EEE;}
+* { margin: 0px; padding: 0px; }
+body { width:100vw; height:100vh; background-color:#EEE;}
 .trackpad-area{
   width:100%;
   height:100%;
   border-radius:10px;
-  border:1px solid #666;
-  background-color:#DDD;
+  background-color:#BBB;
 }
 
 .content {
@@ -16,10 +15,16 @@ body { width:100vw; height:100vh; padding:5px; background-color:#EEE;}
 .inputrow{
   width:100%;
   height:10%;
+  display:flex;
 }
+.placeholder {
+  flex-grow:1;
+  height:100%;
+}
+
 #textinput{
   width:20%;
-  height:70%;
+  height:90%;
   font-size: large;
 }
 .buttons{
@@ -28,7 +33,7 @@ body { width:100vw; height:100vh; padding:5px; background-color:#EEE;}
   font-size: 5vh;
 }
 .menu {
-    width:10%;
+    width:20%;
     height:100%;
     font-size: 5vh;
 }
