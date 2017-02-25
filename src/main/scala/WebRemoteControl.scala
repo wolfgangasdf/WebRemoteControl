@@ -1,13 +1,16 @@
 import java.awt._
 import java.awt.event.{ActionEvent, WindowAdapter, WindowEvent}
-import java.io.{File, FileInputStream}
-import java.net.InetSocketAddress
+import java.io.{ByteArrayInputStream, File, FileInputStream}
+import java.net.{InetAddress, InetSocketAddress}
 import java.util.Properties
+import javax.imageio.ImageIO
 
 import com.typesafe.scalalogging.LazyLogging
-import org.java_websocket.{WebSocket, WebSocketImpl}
+import net.glxn.qrgen.core.image.ImageType
+import net.glxn.qrgen.javase.QRCode
 import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
+import org.java_websocket.{WebSocket, WebSocketImpl}
 
 object WebRemoteControl extends LazyLogging {
 
@@ -15,34 +18,50 @@ object WebRemoteControl extends LazyLogging {
   var httpServerPort = 8000
   var webSocketPort = 8001
 
+  def showQRCode(parent: Frame, s: String): Unit = {
+    val QRDIM = 250
+    val ba = QRCode.from(s).to(ImageType.PNG).withSize(QRDIM, QRDIM).stream.toByteArray
+    val bi= ImageIO.read(new ByteArrayInputStream(ba))
+    val can = new Canvas {
+      setSize(QRDIM, QRDIM)
+      override def paint(g: Graphics): Unit = g.drawImage(bi, 0, 0, this)
+    }
+    val dia = new Dialog(parent, "QR code", true) {
+      setLayout(new java.awt.BorderLayout())
+      add(can, BorderLayout.CENTER)
+      add(new Button("Close") { addActionListener((_: ActionEvent) => getParent.setVisible(false)) }, BorderLayout.SOUTH)
+    }
+    dia.pack()
+    dia.setVisible(true)
+  }
+
   def main(args: Array[String]) {
     System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG")
     val infos = s"${buildinfo.BuildInfo.name} ${buildinfo.BuildInfo.version} built ${buildinfo.BuildInfo.buildTime}"
     logger.info(s"Starting $infos")
     val jarfile = new File(WebRemoteControl.getClass.getProtectionDomain.getCodeSource.getLocation.toURI.getPath)
-    val configfolder = if (jarfile.toString.endsWith(".jar"))
-      jarfile.getParent
-    else
-      new File(".").getAbsoluteFile.getParent
+    val configfolder = if (jarfile.toString.endsWith(".jar")) jarfile.getParent else new File(".").getAbsoluteFile.getParent
     val configfile = new File(configfolder + File.separator + "webremotecontrol.txt")
     logger.info(s"Config file: $configfile")
-
     if (configfile.exists) {
       settings.load(new FileInputStream(configfile))
       httpServerPort = settings.getProperty("httpserverport", "8000").toInt
       webSocketPort = settings.getProperty("websocketport", "8001").toInt
     }
+    val (urlho, urlip) = try {
+      (s"http://${InetAddress.getLocalHost.getHostName}:$httpServerPort", s"http://${InetAddress.getLocalHost.getHostAddress}:$httpServerPort")
+    } catch { case _: Exception => logger.error("Can't get hostname or IP"); ("", "") }
 
     val frame = new Frame( "WebRemoteControl" )
-    frame.setLayout(new GridLayout(6, 1))
-    val btQuit = new Button("Quit")
-    btQuit.addActionListener((_: ActionEvent) => System.exit(0))
+    frame.setLayout(new GridLayout(8, 1))
     frame.add(new Label(infos))
     frame.add(new Label(s"Listening on http://localhost:$httpServerPort"))
     frame.add(new Label(s"Websocket on port $webSocketPort"))
+    if (urlho != "") frame.add(new Button(s"Show QR code <$urlho>") { addActionListener((_: ActionEvent) => showQRCode(frame, urlho) ) })
+    if (urlip != "") frame.add(new Button(s"Show QR code <$urlip>") { addActionListener((_: ActionEvent) => showQRCode(frame, urlip) ) })
     frame.add(new Label(s"Optional config file:"))
     frame.add(new Label(configfile.toString))
-    frame.add(btQuit)
+    frame.add(new Button("Quit") { addActionListener((_: ActionEvent) => System.exit(0)) })
     frame.addWindowListener( new WindowAdapter() {
       override def windowClosing(e : WindowEvent){ System.exit(0) }
       override def windowOpened(e: WindowEvent): Unit = {
