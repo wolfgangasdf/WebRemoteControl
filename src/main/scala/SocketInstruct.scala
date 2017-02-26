@@ -27,6 +27,8 @@ class SocketInstruct extends LazyLogging {
       case "text" => typeText(instructions.drop(1).mkString(","))
       case "debug" => logger.debug("JS: " + instructions.drop(1).mkString(","))
       case "key" => clickKey(java.lang.Integer.parseInt(instructions(1)))
+      case "closetab" => robotHandle.sendCloseTab()
+      case "cmd" => doCommand(instructions(1))
       case "exit" =>
         logger.info("exit")
         System.exit(0)
@@ -71,5 +73,12 @@ class SocketInstruct extends LazyLogging {
   private def clickKey(keycode: Int): Unit = {
     logger.debug("click key " + keycode)
     robotHandle.clickKey(keycode)
+  }
+
+  private def doCommand(cmd: String): Unit = {
+    cmd match {
+      case "netflix" => Helpers.openURL("https://netflix.com")
+      case "youtube" => Helpers.openURL("https://youtube.com")
+    }
   }
 }

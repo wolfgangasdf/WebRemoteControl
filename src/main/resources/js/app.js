@@ -156,6 +156,9 @@ window.onload = function(){
     document.getElementById('bf').addEventListener('click', function() {
         queue.push("key,70")
     }, false);
+    document.getElementById('bclosetab').addEventListener('click', function() {
+        queue.push("closetab")
+    }, false);
 
     document.getElementById('menu').addEventListener('change', function () {
         'use strict';
@@ -170,6 +173,12 @@ window.onload = function(){
                 loadtrackpad();
             }
         }
+    });
+
+    document.getElementById('cmd').addEventListener('change', function () {
+        'use strict';
+        queue.push("cmd," + document.getElementById("cmd").value)
+        document.getElementById("cmd").selectedIndex = -1;
     });
 
     // this assumes that the trackpad div is shown initially!

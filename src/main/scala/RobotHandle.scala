@@ -26,7 +26,7 @@ class RobotHandle extends LazyLogging {
     else x
   }
   // now relative coordinates!
-  def moveRel(x: Int, y: Int, clientWidth: Int, clientHeight: Int) {
+  def moveRel(x: Int, y: Int, clientWidth: Int, clientHeight: Int): Unit = {
     // make movement same in x,y!
     // val rel = scala.math.min(screenWidth / (clientWidth * clientScale), screenHeight / (clientHeight * clientScale))
     val rel = 2.0 // isn't this better (tab/phone)?
@@ -41,30 +41,30 @@ class RobotHandle extends LazyLogging {
     robotMoveAbs(currX, currY)
   }
 
-  def tap() {
+  def tap(): Unit = {
     robotPressLeftButton()
     robot.delay(25)
     robotReleaseLeftButton()
     robot.delay(25)
   }
 
-  def secondaryTap() {
+  def secondaryTap(): Unit = {
     robot.mousePress(InputEvent.BUTTON3_MASK)
     robot.delay(25)
     robot.mouseRelease(InputEvent.BUTTON3_MASK)
     robot.delay(25)
   }
 
-  def scroll(amount: Int) {
+  def scroll(amount: Int): Unit = {
     robot.delay(40)
     robot.mouseWheel(amount)
   }
 
-  def pressLeftButton() {
+  def pressLeftButton(): Unit = {
     robotPressLeftButton()
   }
 
-  def releaseLeftButton() {
+  def releaseLeftButton(): Unit = {
     robotReleaseLeftButton()
   }
 
@@ -98,16 +98,25 @@ class RobotHandle extends LazyLogging {
     }
   }
 
-  private def robotMoveAbs(x: Int, y: Int) {
+  def sendCloseTab(): Unit = {
+    val m: Int = if (Helpers.isMac) KeyEvent.VK_META else KeyEvent.VK_CONTROL
+    robot.keyPress(m)
+    robot.keyPress(KeyEvent.VK_W)
+    robot.delay(10)
+    robot.keyRelease(KeyEvent.VK_W)
+    robot.keyRelease(m)
+  }
+
+  private def robotMoveAbs(x: Int, y: Int): Unit = {
     robot.delay(10)
     robot.mouseMove(x, y)
   }
 
-  private def robotPressLeftButton() {
+  private def robotPressLeftButton(): Unit = {
     robot.mousePress(InputEvent.BUTTON1_MASK)
   }
 
-  private def robotReleaseLeftButton() {
+  private def robotReleaseLeftButton(): Unit = {
     robot.mouseRelease(InputEvent.BUTTON1_MASK)
   }
 
