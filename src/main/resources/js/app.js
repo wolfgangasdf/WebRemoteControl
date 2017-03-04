@@ -66,9 +66,7 @@ window.onload = function(){
         if(canEmit){
           queue.push('move,' + x + ',' + y);
           canEmit = false;
-          setTimeout(function(){
-            canEmit = true;
-          },50);
+          setTimeout(function(){ canEmit = true; }, 50);
         }
       });
 
@@ -78,9 +76,7 @@ window.onload = function(){
         if(canEmit){
           queue.push('scroll,' + scrollAmount);
           canEmit = false;
-          setTimeout(function(){
-            canEmit = true;
-          },50);
+          setTimeout(function(){ canEmit = true; }, 50);
         }
       });
 
@@ -98,9 +94,7 @@ window.onload = function(){
         if(canEmit){
           queue.push('move,' + x + ',' + y);
           canEmit = false;
-          setTimeout(function(){
-            canEmit = true;
-          },50);
+          setTimeout(function(){ canEmit = true; }, 50);
         }
       });
 
@@ -127,7 +121,7 @@ window.onload = function(){
     };
 
 
-
+    /////////////////// events
 
     document.getElementById('textinput').onkeydown = function(event) {
       if (event.keyCode == 13) {
@@ -135,30 +129,13 @@ window.onload = function(){
       }
     }
 
-    document.getElementById('bleft').addEventListener('click', function() {
-        queue.push("key,37")
-    }, false);
-    document.getElementById('bright').addEventListener('click', function() {
-        queue.push("key,39")
-    }, false);
-    document.getElementById('bup').addEventListener('click', function() {
-        queue.push("key,38")
-    }, false);
-    document.getElementById('bdown').addEventListener('click', function() {
-        queue.push("key,40")
-    }, false);
-    document.getElementById('bspace').addEventListener('click', function() {
-        queue.push("key,32")
-    }, false);
-    document.getElementById('bescape').addEventListener('click', function() {
-        queue.push("key,27")
-    }, false);
-    document.getElementById('bf').addEventListener('click', function() {
-        queue.push("key,70")
-    }, false);
-    document.getElementById('bclosetab').addEventListener('click', function() {
-        queue.push("closetab")
-    }, false);
+    function pushclosure(a, b) { return function () { queue.push(a + "," + b) }; }
+
+    autos = document.getElementsByClassName('bauto')
+    for (i = 0; i < autos.length; i++) {
+        var myid = autos[i].id;
+        autos[i].addEventListener('click', pushclosure("bauto", myid), false);
+    }
 
     document.getElementById('menu').addEventListener('change', function () {
         'use strict';
@@ -172,6 +149,9 @@ window.onload = function(){
             if (target.className.includes("trackpad")) { // could do always?
                 loadtrackpad();
             }
+            if (this.value == "cont-files") {
+                queue.push("fbgetfiles")
+            }
         }
     });
 
@@ -181,9 +161,53 @@ window.onload = function(){
         document.getElementById("cmd").selectedIndex = -1;
     });
 
+    /////////////////// file browser
+    document.getElementById('fbup').addEventListener('click', function() {
+        queue.push("fbup")
+    }, false);
+
+    document.getElementById('fbtable').addEventListener('click', function (e) {
+        var target = e.target,
+            row, col, rX, cX;
+        if (target.type !== 'button') {return;}
+        col = target.parentElement;
+        row = col.parentElement;
+        rX = row.rowIndex;
+        console.log(rX);
+        queue.push("fbopen," + rX)
+    });
+
+    /////////////////// startup
+
     // this assumes that the trackpad div is shown initially!
     socket.onopen = function(){
         loadtrackpad();
     }
 
+    /////////////////// react
+
+    socket.onmessage = function (event) {
+        ss = event.data.split(",");
+        switch(ss[0]) {
+            case "cmdlist":
+                select = document.getElementById('cmd');
+                for (var i = 1; i<ss.length; i++){
+                    var opt = document.createElement('option');
+                    opt.value = ss[i];
+                    opt.innerHTML = ss[i];
+                    select.appendChild(opt);
+                }
+                break;
+            case "fblist":
+                s = "";
+                for (i = 1; i < ss.length; i++) {
+                    s += "<tr><td><input type=\"button\" value=\"" + ss[i] + "\"></td></tr>";
+                }
+                document.getElementById('fbtable').innerHTML = s;
+                break;
+            default:
+                alert("received unknown command " + ss[0]);
+                break;
+        }
+    }
 }

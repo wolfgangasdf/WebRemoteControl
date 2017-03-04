@@ -1,6 +1,12 @@
 # WebRemoteControl
 Remote control the mouse and keyboard of a Mac/Windows/Linux computer from a html page, e.g. from a smartphone or a tablet. Adapted from https://github.com/simquat/LocalTrackpad.
 
+The views:
+
+- Mouse/trackpad control, cursor, generic keys (youtube, netflix)
+- VLC control buttons
+- A filebrowser to open files
+
 # How to run
 Note that there is no access control, everybody on the (local) network has access to webremotecontrol!
 

@@ -68,13 +68,6 @@ class RobotHandle extends LazyLogging {
     robotReleaseLeftButton()
   }
 
-  def clickKey(keycode: Int): Unit = {
-    logger.debug("robot: click " + keycode)
-    robot.keyPress(keycode)
-    robot.delay(10)
-    robot.keyRelease(keycode)
-  }
-
   def typeText(text: String): Unit = {
     logger.debug("robot: type [" + text + "]")
     // http://stackoverflow.com/a/29665705
@@ -98,13 +91,15 @@ class RobotHandle extends LazyLogging {
     }
   }
 
-  def sendCloseTab(): Unit = {
-    val m: Int = if (Helpers.isMac) KeyEvent.VK_META else KeyEvent.VK_CONTROL
-    robot.keyPress(m)
-    robot.keyPress(KeyEvent.VK_W)
+  def clickKey(keycode: Int): Unit = {
+    clickCombo(Seq(keycode))
+  }
+
+  def clickCombo(c: Seq[Int]) {
+    logger.debug("robot: click combo " + c.mkString(","))
+    for (k <- c) robot.keyPress(k)
     robot.delay(10)
-    robot.keyRelease(KeyEvent.VK_W)
-    robot.keyRelease(m)
+    for (k <- c.reverse) robot.keyRelease(k)
   }
 
   private def robotMoveAbs(x: Int, y: Int): Unit = {

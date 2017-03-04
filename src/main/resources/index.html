@@ -1,48 +1,78 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>WebRemoteControl</title>
-    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
-    <link rel="stylesheet" href="/css/app.css" type="text/css">
-  </head>
-  <body>
-  <div class="inputrow">
-    <select class="menu" id="menu">
-      <option value="trackpad-area">trackpad</option>
-      <option value="content_2">content2</option>
-      <option value="content_3">content3</option>
-    </select>
-    <select class="menu" id="cmd">
-      <option value="" disabled selected style="display:none;">cmd</option>
-      <option value="netflix">netflix</option>
-      <option value="youtube">youtube</option>
-    </select>
-    <div class="placeholder"></div>
-    <button id="bclosetab" class="buttons">M+w</button>
-  </div>
-
-  <div class="inputrow">
-    <div class="placeholder"></div>
-    <input type="text" value="" id="textinput" placeholder="send text...">
-    <button id="bf" class="buttons">f</button>
-    <button id="bup" class="buttons">&#8679;</button>
-    <button id="bspace" class="buttons">&#9251;</button>
-  </div>
-
-
-  <div class="inputrow">
-    <div class="placeholder"></div>
-    <button id="bescape" class="buttons">esc</button>
-    <button id="bleft" class="buttons">&#8678;</button>
-    <button id="bdown" class="buttons">&#8681;</button>
-    <button id="bright" class="buttons">&#8680;</button>
-  </div>
-    <div class="content">
-      <div id="trackpad-area" class="_vis_ trackpad-area"></div>
-      <div id="content_2" class="_inv_">Content 2</div>
-      <div id="content_3" class="_inv_">Content 3</div>
-    </div>
-    <script src="META-INF/resources/webjars/hammerjs/2.0.6/hammer.min.js"></script>
-    <script src="/js/app.js"></script>
-  </body>
+    <head>
+        <title>WebRemoteControl</title>
+        <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+        <link rel="stylesheet" href="/css/app.css" type="text/css">
+    </head>
+    <body>
+        <div class="inputrow">
+            <select class="menu" id="menu">
+                <option value="cont-trackpad">tp</option>
+                <option value="cont-vlc">vlc</option>
+                <option value="cont-files">fb</option>
+            </select>
+            <select class="menu" id="cmd">
+                <option value="" disabled selected style="display:none;">cmd</option>
+            </select>
+            <div class="placeholder"></div>
+            <button id="bclosetab" class="buttons bauto">&#x274c;</button>
+        </div>
+        <div class="content">
+            <div id="cont-trackpad" class="_vis_ contentitem">
+                <div class="inputrow">
+                    <div class="placeholder"></div>
+                    <input type="text" value="" id="textinput" placeholder="send text...">
+                    <button id="bf" class="buttons bauto">f</button>
+                    <button id="bup" class="buttons bauto">&#8679;</button>
+                    <button id="bspace" class="buttons bauto">&#9251;</button>
+                </div>
+                <div class="inputrow">
+                    <div class="placeholder"></div>
+                    <button id="bescape" class="buttons bauto">esc</button>
+                    <button id="bleft" class="buttons bauto">&#8678;</button>
+                    <button id="bdown" class="buttons bauto">&#8681;</button>
+                    <button id="bright" class="buttons bauto">&#8680;</button>
+                </div>
+                <div id="trackpad-area" class="trackpad-area"></div>
+            </div>
+            <div id="cont-vlc" class="_inv_ contentitem">
+                <div class="inputrow">
+                    <div class="placeholder"></div>
+                    <button id="vlcfullscreen" class="buttons bauto">fs</button>
+                    <button id="vlcvoldown" class="buttons bauto">v&#8681;</button>
+                    <button id="vlcvolup" class="buttons bauto">v&#8679;</button>
+                    <button id="vlcspace" class="buttons bauto">&#9251;</button>
+                </div>
+                <div class="inputrow">
+                    <div class="placeholder"></div>
+                    <button id="vlcjbbb" class="buttons6 bauto">&#8666;</button>
+                    <button id="vlcjbb" class="buttons6 bauto">&#8656;</button>
+                    <button id="vlcjb" class="buttons6 bauto">&#8592;</button>
+                    <button id="vlcjf" class="buttons6 bauto">&#8594;</button>
+                    <button id="vlcjff" class="buttons6 bauto">&#8658;</button>
+                    <button id="vlcjfff" class="buttons6 bauto">&#8667;</button>
+                </div>
+                <div class="inputrow">
+                    <div class="placeholder"></div>
+                    <button id="vlccaudio" class="buttons bauto">Ca</button>
+                    <button id="vlccaudev" class="buttons bauto">Cad</button>
+                    <button id="vlccsubti" class="buttons bauto">Csub</button>
+                    <button id="vlccaspect" class="buttons bauto">Casp</button>
+                    <button id="vlcccrop" class="buttons bauto">Ccro</button>
+                </div>
+            </div>
+            <div id="cont-files" class="_inv_ contentitem">
+                <div class="inputrow">
+                    <div class="placeholder"></div>
+                    <button id="fbup" class="buttons">up</button>
+                </div>
+                <div id="fblist" class="fblist">
+                    <table id="fbtable"></table>
+                </div>
+            </div>
+        </div>
+        <script src="META-INF/resources/webjars/hammerjs/2.0.6/hammer.min.js"></script>
+        <script src="/js/app.js"></script>
+    </body>
 </html>

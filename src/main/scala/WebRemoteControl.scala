@@ -1,8 +1,8 @@
+
 import java.awt._
 import java.awt.event.{ActionEvent, WindowAdapter, WindowEvent}
-import java.io.{ByteArrayInputStream, File, FileInputStream}
+import java.io.ByteArrayInputStream
 import java.net.{InetAddress, InetSocketAddress}
-import java.util.Properties
 import javax.imageio.ImageIO
 
 import com.typesafe.scalalogging.LazyLogging
@@ -14,7 +14,6 @@ import org.java_websocket.{WebSocket, WebSocketImpl}
 
 object WebRemoteControl extends LazyLogging {
 
-  val settings = new Properties()
   var httpServerPort = 8000
   var webSocketPort = 8001
 
@@ -39,15 +38,7 @@ object WebRemoteControl extends LazyLogging {
     System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG")
     val infos = s"${buildinfo.BuildInfo.name} ${buildinfo.BuildInfo.version} built ${buildinfo.BuildInfo.buildTime}"
     logger.info(s"Starting $infos")
-    val jarfile = new File(WebRemoteControl.getClass.getProtectionDomain.getCodeSource.getLocation.toURI.getPath)
-    val configfolder = if (jarfile.toString.endsWith(".jar")) jarfile.getParent else new File(".").getAbsoluteFile.getParent
-    val configfile = new File(configfolder + File.separator + "webremotecontrol.txt")
-    logger.info(s"Config file: $configfile")
-    if (configfile.exists) {
-      settings.load(new FileInputStream(configfile))
-      httpServerPort = settings.getProperty("httpserverport", "8000").toInt
-      webSocketPort = settings.getProperty("websocketport", "8001").toInt
-    }
+    Settings.ini()
     val (urlho, urlip) = try {
       (s"http://${InetAddress.getLocalHost.getHostName}:$httpServerPort", s"http://${InetAddress.getLocalHost.getHostAddress}:$httpServerPort")
     } catch { case _: Exception => logger.error("Can't get hostname or IP"); ("", "") }
@@ -60,7 +51,7 @@ object WebRemoteControl extends LazyLogging {
     if (urlho != "") frame.add(new Button(s"Show QR code <$urlho>") { addActionListener((_: ActionEvent) => showQRCode(frame, urlho) ) })
     if (urlip != "") frame.add(new Button(s"Show QR code <$urlip>") { addActionListener((_: ActionEvent) => showQRCode(frame, urlip) ) })
     frame.add(new Label(s"Optional config file:"))
-    frame.add(new Label(configfile.toString))
+    frame.add(new Label(Settings.configfile.toString))
     frame.add(new Button("Quit") { addActionListener((_: ActionEvent) => System.exit(0)) })
     frame.addWindowListener( new WindowAdapter() {
       override def windowClosing(e : WindowEvent){ System.exit(0) }
@@ -83,6 +74,7 @@ class WebRemoteControl(port: Int) extends WebSocketServer(new InetSocketAddress(
 
   override def onOpen(conn: WebSocket, handshake: ClientHandshake) {
     logger.info(s"${conn.getRemoteSocketAddress.getAddress.getHostAddress} connected! :)")
+    conn.send("cmdlist,netflix,youtube") // TODO config file
   }
 
   override def onClose(conn: WebSocket, code: Int, reason: String, remote: Boolean) {
@@ -90,7 +82,7 @@ class WebRemoteControl(port: Int) extends WebSocketServer(new InetSocketAddress(
   }
 
   override def onMessage(conn: WebSocket, message: String) {
-    socketInstruct.instruct(message)
+    socketInstruct.instruct(message, conn)
   }
 
   override def onError(conn: WebSocket, ex: Exception) {
