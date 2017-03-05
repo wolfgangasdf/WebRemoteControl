@@ -16,12 +16,13 @@ class SocketInstruct extends LazyLogging {
 
   // mac: cmd=VK_META
   private val combos = collection.immutable.HashMap(
+    "bspace" -> Seq(KeyEvent.VK_SPACE),
     "bf" -> Seq(KeyEvent.VK_F),
     "bup" -> Seq(KeyEvent.VK_UP),
     "bdown" -> Seq(KeyEvent.VK_DOWN),
-    "left" -> Seq(KeyEvent.VK_LEFT),
+    "bleft" -> Seq(KeyEvent.VK_LEFT),
     "bright" -> Seq(KeyEvent.VK_RIGHT),
-    "bbescape" -> Seq(KeyEvent.VK_ESCAPE),
+    "bescape" -> Seq(KeyEvent.VK_ESCAPE),
     "bclosetab" -> Seq(if (Helpers.isMac) KeyEvent.VK_META else KeyEvent.VK_CONTROL, KeyEvent.VK_W),
     "vlcfullscreen" -> (if (Helpers.isWin) Seq(KeyEvent.VK_F) else Seq(KeyEvent.VK_META, KeyEvent.VK_F)),
     "vlcvoldown" -> (if (Helpers.isWin) Seq(KeyEvent.VK_CONTROL, KeyEvent.VK_DOWN) else Seq(KeyEvent.VK_DOWN)),
