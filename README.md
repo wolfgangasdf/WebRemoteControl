@@ -13,7 +13,7 @@ Note that there is no access control, everybody on the (local) network has acces
 * On the server:
     * Get the [Java JRE](http://www.oracle.com/technetwork/java/javase/downloads/index.html) >= 8u101. Don't forget to untick the [crapware](https://www.google.com/search?q=java+crapware) installer, and/or [disable it permanently](https://www.java.com/en/download/faq/disable_offers.xml)!
     * [Download the jar](https://bitbucket.org/wolfgang/webremotecontrol/downloads)
-    * Double-click to run the jar.
+    * Double-click to run the jar or do `java -jar webremotecontrol.jar` in a terminal.
     * Click on one of the buttons to show a QR code that contains the server URL and scan this with the client.
 
 ![Screenshot_20170205-121604.png](https://bitbucket.org/repo/AxyGpB/images/1468820713-Screenshot_20170205-121604.png)
@@ -23,6 +23,7 @@ An optional config file can be placed next to the jar, see webremotecontrol. Exa
 
     httpserverport=9000
     websocketport=9001
+    urls=name1,http://server1;name2,http://server2
 
 # How to develop, compile & package
 

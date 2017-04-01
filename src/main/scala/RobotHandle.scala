@@ -10,35 +10,17 @@ class RobotHandle extends LazyLogging {
   private def getScreenSize: Dimension = Toolkit.getDefaultToolkit.getScreenSize
   private val screenWidth: Int = getScreenSize.width
   private val screenHeight: Int = getScreenSize.height
-  private var currX = MouseInfo.getPointerInfo.getLocation.x
-  private var currY = MouseInfo.getPointerInfo.getLocation.y
-  private var oldClientX = -1
-  private var oldClientY = -1
   val clientScale = 1.5 // 1.5 means that you have to move 1.5 times the client dimension to move over full server dimension
 
   robot.setAutoDelay(40)
 
   robot.setAutoWaitForIdle(true)
 
-  def coerce(x: Int, min: Int, max: Int): Int = {
-    if (x < min) min
-    else if (x > max) max
-    else x
-  }
-  // now relative coordinates!
-  def moveRel(x: Int, y: Int, clientWidth: Int, clientHeight: Int): Unit = {
-    // make movement same in x,y!
-    // val rel = scala.math.min(screenWidth / (clientWidth * clientScale), screenHeight / (clientHeight * clientScale))
-    val rel = 2.0 // isn't this better (tab/phone)?
-    val relX = ((x - oldClientX) * rel).toInt
-    currX = coerce(currX + relX, 0, screenWidth)
-    oldClientX = x
+  def coerce(x: Int, min: Int, max: Int): Int = if (x < min) min else if (x > max) max else x
 
-    val relY = ((y - oldClientY) * rel).toInt
-    currY = coerce(currY + relY, 0, screenHeight)
-    oldClientY = y
-
-    robotMoveAbs(currX, currY)
+  def moveRel(x: Int, y: Int): Unit = {
+    val mpl = MouseInfo.getPointerInfo.getLocation
+    robotMoveAbs(coerce(mpl.x + x, 0, screenWidth - 1), coerce(mpl.y + y, 0, screenHeight - 1))
   }
 
   def tap(): Unit = {

@@ -21,8 +21,7 @@ class SimpleHttpServer(private var port: Int) extends LazyLogging {
     def handle(t: HttpExchange) {
       var requestURI = t.getRequestURI.toString.substring(1)
       if (requestURI.length == 0) requestURI = "index.html"
-      val headers = t.getResponseHeaders
-      headers.add("Content-Type", detectContentType(requestURI))
+      t.getResponseHeaders.add("Content-Type", detectContentType(requestURI))
       val is = getClass.getResourceAsStream(requestURI)
       if (is != null) {
         val bis = new BufferedInputStream(is)
@@ -34,7 +33,7 @@ class SimpleHttpServer(private var port: Int) extends LazyLogging {
         if (requestURI.endsWith("app.js") && WebRemoteControl.webSocketPort != 8001) {
           val charset = "UTF-8"
           var s = new String(content, charset)
-          s = s.replaceFirst(":8001", s":${WebRemoteControl.webSocketPort}")
+          s = s.replaceAllLiterally(":8001", s":${WebRemoteControl.webSocketPort}")
           content = s.getBytes(charset)
         }
 

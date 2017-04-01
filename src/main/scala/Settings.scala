@@ -16,10 +16,11 @@ object Settings extends LazyLogging {
   }
   def ini(): Unit = {
     logger.info(s"Config file: $configfile")
-    if (configfile.exists) {
-      settings.load(new FileInputStream(configfile))
-      WebRemoteControl.httpServerPort = settings.getProperty("httpserverport", "8000").toInt
-      WebRemoteControl.webSocketPort = settings.getProperty("websocketport", "8001").toInt
-    }
+    if (configfile.exists) settings.load(new FileInputStream(configfile))
+    WebRemoteControl.httpServerPort = settings.getProperty("httpserverport", "8000").toInt
+    WebRemoteControl.webSocketPort = settings.getProperty("websocketport", "8001").toInt
+    WebRemoteControl.urls.clear()
+    val defurls = "youtube,http://youtube.com;netflix,http://netflix.com"
+    settings.getProperty("urls", defurls).split(";").map(_.split(",")).map { case Array(k, v) => WebRemoteControl.urls.put(k, v) }
   }
 }

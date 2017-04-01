@@ -12,10 +12,13 @@ import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
 import org.java_websocket.{WebSocket, WebSocketImpl}
 
+import scala.collection.mutable
+
 object WebRemoteControl extends LazyLogging {
 
   var httpServerPort = 8000
   var webSocketPort = 8001
+  var urls = new mutable.LinkedHashMap[String, String]()
 
   def showQRCode(parent: Frame, s: String): Unit = {
     val QRDIM = 250
@@ -58,8 +61,7 @@ object WebRemoteControl extends LazyLogging {
       override def windowOpened(e: WindowEvent): Unit = {
         new SimpleHttpServer(httpServerPort).start()
         WebSocketImpl.DEBUG = false
-        val webRemoteControl = new WebRemoteControl(webSocketPort)
-        webRemoteControl.start()
+        new WebRemoteControlServer(webSocketPort).start()
       }
     })
     frame.setSize( 400, 300 )
@@ -68,13 +70,14 @@ object WebRemoteControl extends LazyLogging {
   }
 }
 
-class WebRemoteControl(port: Int) extends WebSocketServer(new InetSocketAddress(port)) with LazyLogging {
+class WebRemoteControlServer(port: Int) extends WebSocketServer(new InetSocketAddress(port)) with LazyLogging {
 
   private val socketInstruct: SocketInstruct = new SocketInstruct()
 
   override def onOpen(conn: WebSocket, handshake: ClientHandshake) {
     logger.info(s"${conn.getRemoteSocketAddress.getAddress.getHostAddress} connected! :)")
-    conn.send("cmdlist,netflix,youtube") // TODO config file
+    Settings.ini()
+    conn.send("cmdlist," + WebRemoteControl.urls.keySet.mkString(","))
   }
 
   override def onClose(conn: WebSocket, code: Int, reason: String, remote: Boolean) {

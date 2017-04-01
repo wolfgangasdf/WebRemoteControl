@@ -2,36 +2,29 @@ window.onload = function(){
     var socket = new WebSocket("ws://" + window.location.hostname + ":8001");
     var hammer = null;
     var queue = [];
+    var FACTOR = 4.0;
 
     loadtrackpad = function(){
       var trackpad = document.getElementById('trackpad-area');
-      var width = trackpad.offsetWidth;
-      var height = trackpad.offsetHeight;
-      var x = parseInt(width/2);
-      var y = parseInt(height/2);
       var scroll;
       var secondaryTap;
       var prevDeltaX = 0;
       var prevDeltaY = 0;
-      var scrollDelta = 0;
       var scrollAmount = 0;
       var prevScrollAmount = 0;
-      var clearDelta;
       var canEmit = true;
 
       setInterval(function(){
-        var toEmit = queue.shift()
-        if (toEmit)
-          socket.send(toEmit)
+        if (socket.readyState != socket.OPEN) { window.location.reload(true); }
 
+        var toEmit = queue.shift();
+        if (toEmit) { socket.send(toEmit); }
       },25);
 
-        socket.send('screen,' + width+","+height);
-
-        if (hammer !== null) {
-            socket.send('debug,destroying existing hammer...');
-            hammer.destroy();
-        }
+      if (hammer !== null) {
+        socket.send('debug,destroying existing hammer...');
+        hammer.destroy();
+      }
 
       hammer = Hammer(trackpad);
 
@@ -56,19 +49,21 @@ window.onload = function(){
       hammer.add(drag);
       hammer.add(secondaryTap);
 
-      hammer.on('pan', function(ev) {
-        x+= ev.deltaX - prevDeltaX;
-        y+= ev.deltaY - prevDeltaY;
+      function panDrag(ev) {
+        dx = Math.round(FACTOR * (ev.deltaX - prevDeltaX));
+        dy = Math.round(FACTOR * (ev.deltaY - prevDeltaY));
 
         prevDeltaX = ev.deltaX;
         prevDeltaY = ev.deltaY;
 
         if(canEmit){
-          queue.push('move,' + x + ',' + y);
+          queue.push('move,' + dx + ',' + dy);
           canEmit = false;
           setTimeout(function(){ canEmit = true; }, 50);
         }
-      });
+      }
+
+      hammer.on('pan', panDrag);
 
       hammer.on('scroll', function(ev){
         scrollAmount = ev.deltaY + (prevScrollAmount*-1);
@@ -84,19 +79,7 @@ window.onload = function(){
         queue.push('dragStart');
       });
 
-      hammer.on('drag', function(ev) {
-        x+= ev.deltaX - prevDeltaX;
-        y+= ev.deltaY - prevDeltaY;
-
-        prevDeltaX = ev.deltaX;
-        prevDeltaY = ev.deltaY;
-
-        if(canEmit){
-          queue.push('move,' + x + ',' + y);
-          canEmit = false;
-          setTimeout(function(){ canEmit = true; }, 50);
-        }
-      });
+      hammer.on('drag', panDrag);
 
       hammer.on('dragend', function(ev) {
         queue.push('dragEnd');
@@ -125,7 +108,7 @@ window.onload = function(){
 
     document.getElementById('textinput').onkeydown = function(event) {
       if (event.keyCode == 13) {
-          queue.push("text," + document.getElementById('textinput').value)
+        queue.push("text," + document.getElementById('textinput').value);
       }
     }
 
@@ -133,8 +116,8 @@ window.onload = function(){
 
     autos = document.getElementsByClassName('bauto')
     for (i = 0; i < autos.length; i++) {
-        var myid = autos[i].id;
-        autos[i].addEventListener('click', pushclosure("bauto", myid), false);
+      var myid = autos[i].id;
+      autos[i].addEventListener('click', pushclosure("bauto", myid), false);
     }
 
     document.getElementById('menu').addEventListener('change', function () {
@@ -158,7 +141,7 @@ window.onload = function(){
     document.getElementById('cmd').addEventListener('change', function () {
         'use strict';
         queue.push("cmd," + document.getElementById("cmd").value)
-        document.getElementById("cmd").selectedIndex = -1;
+        document.getElementById("cmd").selectedIndex = 0;
     });
 
     /////////////////// file browser

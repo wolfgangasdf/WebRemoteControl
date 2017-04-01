@@ -10,10 +10,6 @@ class SocketInstruct extends LazyLogging {
 
   private var inputKind: String = _
 
-  private var clientScreenWidth: Int = 0
-
-  private var clientScreenHeight: Int = 0
-
   // mac: cmd=VK_META
   private val combos = collection.immutable.HashMap(
     "bspace" -> Seq(KeyEvent.VK_SPACE),
@@ -55,7 +51,6 @@ class SocketInstruct extends LazyLogging {
       case "move" => move(instructions(1).toInt, instructions(2).toInt)
       case "tap" => robotHandle.tap()
       case "tap2" => robotHandle.secondaryTap()
-      case "screen" => setClientScreenSize(instructions(1).toInt, instructions(2).toInt)
       case "dragStart" => robotHandle.pressLeftButton()
       case "dragEnd" => robotHandle.releaseLeftButton()
       case "scroll" => robotHandle.scroll(instructions(1).toInt)
@@ -87,19 +82,11 @@ class SocketInstruct extends LazyLogging {
   }
 
   private def move(x: Int, y: Int) {
-    robotHandle.moveRel(x, y, clientScreenWidth, clientScreenHeight)
-  }
-
-  private def setClientScreenSize(width: Int, height: Int) {
-    clientScreenWidth = width
-    clientScreenHeight = height
+    robotHandle.moveRel(x, y)
   }
 
   private def doCommand(cmd: String): Unit = {
-    cmd match {
-      case "netflix" => Helpers.openURL("https://netflix.com")
-      case "youtube" => Helpers.openURL("https://youtube.com")
-    }
+    WebRemoteControl.urls.get(cmd).foreach(Helpers.openURL)
   }
 
 }
