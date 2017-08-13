@@ -18,7 +18,7 @@ object WebRemoteControl extends LazyLogging {
 
   var httpServerPort = 8000
   var webSocketPort = 8001
-  var urls = new mutable.LinkedHashMap[String, String]()
+  val urls = new mutable.LinkedHashMap[String, String]()
 
   def showQRCode(parent: Frame, s: String): Unit = {
     val QRDIM = 250
@@ -64,7 +64,7 @@ object WebRemoteControl extends LazyLogging {
         new WebRemoteControlServer(webSocketPort).start()
       }
     })
-    frame.setSize( 400, 300 )
+    frame.setSize(400, 300)
     frame.pack()
     frame.setVisible(true)
   }
@@ -81,7 +81,7 @@ class WebRemoteControlServer(port: Int) extends WebSocketServer(new InetSocketAd
   }
 
   override def onClose(conn: WebSocket, code: Int, reason: String, remote: Boolean) {
-    logger.info(s"${conn.getRemoteSocketAddress.getAddress.getHostAddress } disconnected! ':(")
+    logger.info(s"${conn.getRemoteSocketAddress.getAddress.getHostAddress } disconnected! :(")
   }
 
   override def onMessage(conn: WebSocket, message: String) {
@@ -92,5 +92,9 @@ class WebRemoteControlServer(port: Int) extends WebSocketServer(new InetSocketAd
     ex.printStackTrace()
     if (conn != null) {
     }
+  }
+
+  override def onStart(): Unit = {
+    logger.info(s"webserver started!")
   }
 }

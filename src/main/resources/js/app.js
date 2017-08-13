@@ -15,7 +15,11 @@ window.onload = function(){
       var canEmit = true;
 
       setInterval(function(){
-        if (socket.readyState != socket.OPEN) { window.location.reload(true); }
+        if (socket.readyState != socket.OPEN) {
+            setTimeout(function(){
+                window.location.reload(true);
+            }, 100)
+        }
 
         var toEmit = queue.shift();
         if (toEmit) { socket.send(toEmit); }

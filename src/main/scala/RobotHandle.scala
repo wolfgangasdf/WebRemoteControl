@@ -3,6 +3,7 @@ import java.awt.event.{InputEvent, KeyEvent}
 
 import com.typesafe.scalalogging.LazyLogging
 
+
 class RobotHandle extends LazyLogging {
 
   private val robot: Robot = new Robot()
@@ -10,6 +11,7 @@ class RobotHandle extends LazyLogging {
   private def getScreenSize: Dimension = Toolkit.getDefaultToolkit.getScreenSize
   private val screenWidth: Int = getScreenSize.width
   private val screenHeight: Int = getScreenSize.height
+  private var lasttime = System.currentTimeMillis()
   val clientScale = 1.5 // 1.5 means that you have to move 1.5 times the client dimension to move over full server dimension
 
   robot.setAutoDelay(40)
@@ -18,9 +20,21 @@ class RobotHandle extends LazyLogging {
 
   def coerce(x: Int, min: Int, max: Int): Int = if (x < min) min else if (x > max) max else x
 
+  // accellerated moving https://stackoverflow.com/a/8773322
   def moveRel(x: Int, y: Int): Unit = {
     val mpl = MouseInfo.getPointerInfo.getLocation
-    robotMoveAbs(coerce(mpl.x + x, 0, screenWidth - 1), coerce(mpl.y + y, 0, screenHeight - 1))
+    val dr = math.sqrt(x*x+y*y)
+    val t = System.currentTimeMillis()
+    val dt = t - lasttime
+    lasttime = t
+    val v = dr/dt
+    val accela = 1.0
+    val accelb = 2.0
+    val v_new = accela * v + accelb * v*v // probably average speed (and direction?) last 3 moves?
+    val dr_new = v_new * dt
+    val dx_new = (x * dr_new / dr).toInt
+    val dy_new = (y * dr_new / dr).toInt
+    robotMoveAbs(coerce(mpl.x + dx_new, 0, screenWidth - 1), coerce(mpl.y + dy_new, 0, screenHeight - 1))
   }
 
   def tap(): Unit = {
