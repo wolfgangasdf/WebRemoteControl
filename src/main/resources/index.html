@@ -3,12 +3,13 @@
     <head>
         <title>WebRemoteControl</title>
         <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+        <meta name="mobile-web-app-capable" content="yes">
         <link rel="stylesheet" href="/css/app.css" type="text/css">
     </head>
     <body>
         <div class="inputrow">
             <select class="menu" id="menu">
-                <option value="cont-trackpad">tp</option>
+                <option value="cont-basic">tp</option>
                 <option value="cont-vlc">vlc</option>
                 <option value="cont-files">fb</option>
             </select>
@@ -19,7 +20,7 @@
             <button id="bclosetab" class="buttons bauto">&#x274c;</button>
         </div>
         <div class="content">
-            <div id="cont-trackpad" class="_vis_ contentitem">
+            <div id="cont-basic" class="_vis_ contentitem">
                 <div class="inputrow">
                     <div class="placeholder"></div>
                     <input type="text" value="" id="textinput" placeholder="send text...">
@@ -34,7 +35,6 @@
                     <button id="bdown" class="buttons bauto">&#8681;</button>
                     <button id="bright" class="buttons bauto">&#8680;</button>
                 </div>
-                <div id="trackpad-area" class="trackpad-area"></div>
             </div>
             <div id="cont-vlc" class="_inv_ contentitem">
                 <div class="inputrow">
@@ -71,6 +71,7 @@
                     <table id="fbtable"></table>
                 </div>
             </div>
+            <div id="cont-trackpadarea" class="_vis_ trackpad-area"></div>
         </div>
         <script src="META-INF/resources/webjars/hammerjs/2.0.8/hammer.min.js"></script>
         <script src="/js/app.js"></script>

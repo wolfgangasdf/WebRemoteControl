@@ -5,7 +5,7 @@ window.onload = function(){
     var FACTOR = 4.0;
 
     loadtrackpad = function(){
-      var trackpad = document.getElementById('trackpad-area');
+      var trackpad = document.getElementById('cont-trackpadarea');
       var scroll;
       var secondaryTap;
       var prevDeltaX = 0;
@@ -127,13 +127,20 @@ window.onload = function(){
     document.getElementById('menu').addEventListener('change', function () {
         'use strict';
         var vis = document.getElementsByClassName('_vis_');
-        var target = document.getElementById(this.value);
+        var targetid = this.value;
+        console.log("targetid=" + targetid);
+        var target = document.getElementById(targetid);
         if (vis.length !== 0) {
             vis[0].className = vis[0].className.replace('_vis_','_inv_');
         }
         if (target !== null ) {
             target.className = target.className.replace('_inv_','_vis_');
-            if (target.className.includes("trackpad")) { // could do always?
+            var tpa = document.getElementById("cont-trackpadarea");
+            if (targetid == "cont-files") {
+                console.log("files!!!");
+                tpa.className = tpa.className.replace('_vis_','_inv_');
+            } else {
+                tpa.className = tpa.className.replace('_inv_','_vis_');
                 loadtrackpad();
             }
             if (this.value == "cont-files") {

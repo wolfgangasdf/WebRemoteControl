@@ -15,6 +15,7 @@ Note that there is no access control, everybody on the (local) network has acces
     * [Download the jar](https://bitbucket.org/wolfgang/webremotecontrol/downloads)
     * Double-click to run the jar or do `java -jar webremotecontrol.jar` in a terminal.
     * Click on one of the buttons to show a QR code that contains the server URL and scan this with the client.
+    * Adding an icon to your homescreen should make a web app.
 
 ![Screenshot_20170205-121604.png](https://bitbucket.org/repo/AxyGpB/images/1468820713-Screenshot_20170205-121604.png)
 
