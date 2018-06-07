@@ -9,24 +9,30 @@ html, body {
   background-color:#EEE;
 }
 
-.trackpad-area{
-  flex-grow:1;
-  width:100%;
-  border-radius:10px;
-  background-color:#BBB;
-}
-
 .content {
   display:flex;
   flex-direction:column;
   width:100%;
-  height:90vh;
+  height:100%;
 }
 
+.swipecontent {
+  display:flex;
+  flex-direction:column;
+  width:100%;
+}
+
+.menu {
+    width:20%;
+    height:100%;
+    font-size: 5vh;
+}
 .contentitem {
   width:100%;
   flex-grow:0;
-  /*height:100%;*/
+}
+._inv_ {
+    display: none;
 }
 
 .inputrow{
@@ -38,12 +44,6 @@ html, body {
   flex-grow:1;
   height:100%;
 }
-
-#textinput{
-  width:20%;
-  height:90%;
-  font-size: large;
-}
 .buttons{
   width:20%;
   height:100%;
@@ -54,20 +54,24 @@ html, body {
   height:100%;
   font-size: 5vh;
 }
-.menu {
-    width:20%;
-    height:100%;
-    font-size: 5vh;
+
+.trackpad-area{
+  flex-grow:1;
+  width:100%;
+  border-radius:10px;
+  background-color:#BBB;
 }
-._inv_ {
-    display: none;
+
+#textinput{
+  width:20%;
+  height:90%;
+  font-size: large;
 }
 
 #fblist {
     width:100%;
     height:100%;
 }
-
 #fbtable {
     width:100%;
 }
