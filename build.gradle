@@ -40,12 +40,13 @@ defaultTasks 'run'
 apply plugin: 'com.github.johnrengelman.shadow'
 shadowJar {
     manifest {
-        attributes 'Description': 'This is an application JAR'
-        attributes 'Implementation-Title': 'Gradle Jar File Example'
+        attributes 'Description': 'WebRemoteControl JAR'
+        attributes 'Implementation-Title': 'WebRemoteControl'
         attributes 'Implementation-Version': version
         attributes 'Main-Class': 'MainKt'
         classifier = null
         version = null
+        archiveName = 'webremotecontrol.jar'
     }
     mergeServiceFiles() // sometimes essential...
 }
