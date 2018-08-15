@@ -1,5 +1,8 @@
-target/
 .idea
-glob:*.iml
+*.iml
 .DS_Store
+.gradle
+.DS_Store
+/build
+/out
 webremotecontrol.txt

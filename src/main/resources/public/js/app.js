@@ -7,7 +7,7 @@ var FACTOR = 4.0;
 var intervalid = null;
 
 function debug(s) {
-    console.log(s);
+    console.log("[" + window.location.hash.substr(1) + "] " + s);
 }
 
 function menuchanged() {
@@ -140,7 +140,9 @@ function loadtrackpad() {
 
 // init websocket. call after connection loss.
 function initwebsocket() {
-    socket = new WebSocket("ws://" + window.location.hostname + ":8001");
+    debug("initwebsocket");
+    socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/docs/" + window.location.hash.substr(1));
+    debug("initwebsocket: socket created " + socket.readyState);
 
     socket.onopen = function(){
         loadtrackpad();
@@ -151,7 +153,9 @@ function initwebsocket() {
     socket.onclose = function(){
         debug("socket.onclose");
         clearInterval(intervalid);
+        debug("socket.onclose: cleared int");
         setTimeout(function(){ initwebsocket(); }, 250);
+        debug("socket.onclose: after settimeout start");
     }
 
     // react
@@ -186,6 +190,13 @@ function initwebsocket() {
              if (toEmit) { socket.send(toEmit); }
         }
     },25);
+}
+
+window.onhashchange = initwebsocket;
+
+if (!window.location.hash) {
+    const newDocumentId = Date.now().toString(36); // this should be more random
+    window.history.pushState(null, null, "#" + newDocumentId);
 }
 
 

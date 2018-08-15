@@ -1,0 +1,93 @@
+buildscript {
+    ext.kotlin_version = '1.2.60'
+
+    repositories {
+        mavenCentral()
+        jcenter() // shadowJar
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
+    }
+}
+
+group 'com.wolle'
+version '1.0-SNAPSHOT'
+
+task wrapper(type: Wrapper) {
+    gradleVersion = "4.4.1"
+}
+
+apply plugin: 'kotlin'
+//kotlin {
+//    experimental {
+//        coroutines 'enable'
+//    }
+//}
+
+apply plugin: 'idea'
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+apply plugin: 'application'
+mainClassName = 'MainKt'
+defaultTasks 'run'
+
+apply plugin: 'com.github.johnrengelman.shadow'
+shadowJar {
+    manifest {
+        attributes 'Description': 'This is an application JAR'
+        attributes 'Implementation-Title': 'Gradle Jar File Example'
+        attributes 'Implementation-Version': version
+        attributes 'Main-Class': 'MainKt'
+        classifier = null
+        version = null
+    }
+    mergeServiceFiles() // sometimes essential...
+}
+
+//////////////////
+
+
+repositories {
+    mavenCentral()
+    mavenLocal() // for jwt
+    jcenter() // for kotlinx.html, aza-css
+    maven { url "https://jitpack.io" } // QRgen
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    compile 'io.github.microutils:kotlin-logging:1.4.8'
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25' // no colors, everything stderr
+
+    // javalin
+    compile 'io.javalin:javalin:1.6.1'
+
+    compile 'org.webjars:hammerjs:2.0.8'
+    compile 'com.github.kenglxn.QRGen:javase:2.5.0'
+
+    // kotlinx.html
+//    compile "org.jetbrains.kotlinx:kotlinx-html-jvm:0.6.8"
+
+    // css dsl
+//    compile 'azadev.kotlin:aza-kotlin-css:1.0'
+
+
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+task dist {
+    dependsOn shadowJar // fat jar
+}
