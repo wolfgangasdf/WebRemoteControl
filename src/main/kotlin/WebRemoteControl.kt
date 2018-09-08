@@ -1,5 +1,5 @@
 import io.javalin.Javalin
-import io.javalin.embeddedserver.jetty.websocket.WsSession
+import io.javalin.websocket.WsSession
 import mu.KotlinLogging
 import net.glxn.qrgen.core.image.ImageType
 import net.glxn.qrgen.javase.QRCode
@@ -13,7 +13,7 @@ import javax.imageio.ImageIO
 
 
 data class Collaboration(var doc: String = "", val sessions: MutableSet<WsSession> = ConcurrentHashMap.newKeySet())
-val WsSession.docId: String get() = this.param("doc-id")!! // is always present, or route won't match
+val WsSession.docId: String get() = this.pathParam("doc-id")
 private val logger = KotlinLogging.logger {} // after set properties!
 
 object WebRemoteControl {
@@ -54,6 +54,7 @@ object WebRemoteControl {
             ws("/docs/:doc-id") { ws ->
                 ws.onConnect { session ->
                     logger.info("${session.remoteAddress.hostName} connected docId=${session.docId} !")
+                    session.idleTimeout = 1000
                     if (collaborations[session.docId] == null) {
                         collaborations[session.docId] = Collaboration()
                     }
@@ -62,7 +63,7 @@ object WebRemoteControl {
                     session.send("cmdlist," + WebRemoteControl.urls.keys.joinToString(","))
                 }
                 ws.onMessage { session, message ->
-                    logger.info("${session.remoteAddress.hostName} docId=${session.docId} msg: $message")
+                    if (message != "keepalive") logger.info("${session.remoteAddress.hostName} docId=${session.docId} msg: $message")
                     socketInstruct.instruct(message, session)
                 }
                 ws.onClose { session, _, _ ->
@@ -73,8 +74,8 @@ object WebRemoteControl {
         }
         logger.info("Server started!")
         jl.start()
-
     }
+
     fun showGUI() {
         val infos = "WebRemoteControl built ${Helpers.getClassBuildTime().toString()}"
         logger.info("Starting $infos")

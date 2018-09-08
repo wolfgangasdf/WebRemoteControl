@@ -154,7 +154,7 @@ function initwebsocket() {
         debug("socket.onclose");
         clearInterval(intervalid);
         debug("socket.onclose: cleared int");
-        setTimeout(function(){ initwebsocket(); }, 250);
+        setTimeout(function(){ initwebsocket(); }, 1000);
         debug("socket.onclose: after settimeout start");
     }
 
@@ -187,7 +187,10 @@ function initwebsocket() {
     intervalid = setInterval(function(){
         if (socket.readyState == socket.OPEN) {
              var toEmit = queue.shift();
-             if (toEmit) { socket.send(toEmit); }
+             if (toEmit)
+                socket.send(toEmit);
+             else
+                socket.send("keepalive"); // TODO less often?
         }
     },25);
 }
