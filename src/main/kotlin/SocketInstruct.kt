@@ -50,7 +50,6 @@ class SocketInstruct {
         instructions = message.split(",")
         inputKind = instructions[0]
         when(inputKind) {
-            "keepalive" -> {}
             "move" -> move(instructions[1].toInt(), instructions[2].toInt())
             "tap" -> robotHandle.tap()
             "tap2" -> robotHandle.secondaryTap()

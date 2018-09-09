@@ -1,10 +1,18 @@
 
+var trackfactor = 4.0; // trackpad scale factor
+var socketrestartms = 250; // min time between socket reconnect
+var clearqueuems = 2000; // clear socket queue if disconnected after this
+var intervalms = 25; // interval ms for sending data over socket (25)
+
+// internal
+var lastInfo = "";
 var socket = null;
 var hammer = null;
 var hammertr = null;
 var queue = [];
-var FACTOR = 4.0;
-var intervalid = null;
+var socketrestarting = false;
+var socketlastrestartms = 0;
+var socketlastfailms = 0;
 
 function debug(s) {
     console.log("[" + window.location.hash.substr(1) + "] " + s);
@@ -85,8 +93,8 @@ function loadtrackpad() {
     hammer.add(secondaryTap);
 
     function panDrag(ev) {
-        dx = Math.round(FACTOR * (ev.deltaX - prevDeltaX));
-        dy = Math.round(FACTOR * (ev.deltaY - prevDeltaY));
+        dx = Math.round(trackfactor * (ev.deltaX - prevDeltaX));
+        dy = Math.round(trackfactor * (ev.deltaY - prevDeltaY));
 
         prevDeltaX = ev.deltaX;
         prevDeltaY = ev.deltaY;
@@ -142,20 +150,16 @@ function loadtrackpad() {
 function initwebsocket() {
     debug("initwebsocket");
     socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/docs/" + window.location.hash.substr(1));
+    socketlastrestartms = +new Date();
     debug("initwebsocket: socket created " + socket.readyState);
-
     socket.onopen = function(){
-        loadtrackpad();
-        loadswiper();
         debug("socket.onopen: initialized!");
+        socketrestarting = false;
     }
 
     socket.onclose = function(){
         debug("socket.onclose");
-        clearInterval(intervalid);
-        debug("socket.onclose: cleared int");
-        setTimeout(function(){ initwebsocket(); }, 1000);
-        debug("socket.onclose: after settimeout start");
+        socketrestarting = false;
     }
 
     // react
@@ -184,18 +188,46 @@ function initwebsocket() {
         }
     }
 
-    intervalid = setInterval(function(){
-        if (socket.readyState == socket.OPEN) {
-             var toEmit = queue.shift();
-             if (toEmit)
-                socket.send(toEmit);
-             else
-                socket.send("keepalive"); // TODO less often?
-        }
-    },25);
 }
 
-window.onhashchange = initwebsocket;
+// handles queue<>socket communication, reconnects
+setInterval(function(){
+    var info = "";
+    if (socket == null)
+        info = "0";
+    else
+        if (socket.readyState != socket.OPEN || socketrestarting) info = "E";
+    if (info != lastInfo) {
+        document.getElementById('info').innerHTML = info;
+        lastInfo = info;
+    }
+    //debug("interval: len=" + queue.length + " socket=" + socket + " srstate=" + socket.readyState);
+    if (queue.length != 0 && socket != null) {
+        var msnow = +new Date();
+        if (socket.readyState == socket.OPEN) {
+            socketlastfailms = -1;
+            var toEmit = queue.shift();
+            if (toEmit) socket.send(toEmit);
+        } else {
+            if (socketlastfailms == -1) socketlastfailms = msnow;
+            if (!socketrestarting && msnow-socketlastrestartms > socketrestartms) {
+                debug("restart socket!");
+                socketrestarting = true;
+                initwebsocket();
+            } else {
+                if (msnow-socketlastfailms > clearqueuems) {
+                    queue = []; // now this whole block is not called until user does stuff again
+                    socketlastfailms = -1;
+                }
+            }
+        }
+    }
+},intervalms);
+
+window.onhashchange = function() {
+    debug("onhashchange!")
+    initwebsocket;
+}
 
 if (!window.location.hash) {
     const newDocumentId = Date.now().toString(36); // this should be more random
@@ -204,13 +236,14 @@ if (!window.location.hash) {
 
 
 window.onload = function() {
-
-    // https://github.com/B1naryStudio/js-mobile-console
-    mobileConsole.show();
+    mobileConsole.show(); // https://github.com/B1naryStudio/js-mobile-console
     mobileConsole.options({ showOnError: true, proxyConsole: false, isCollapsed: true, catchErrors: true });
     mobileConsole.toggleCollapsed();
 
     initwebsocket();
+
+    loadtrackpad();
+    loadswiper();
 
     // events
     document.getElementById('textinput').onkeydown = function(event) {

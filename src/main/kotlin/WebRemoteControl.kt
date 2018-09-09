@@ -54,16 +54,14 @@ object WebRemoteControl {
             ws("/docs/:doc-id") { ws ->
                 ws.onConnect { session ->
                     logger.info("${session.remoteAddress.hostName} connected docId=${session.docId} !")
-                    session.idleTimeout = 1000
                     if (collaborations[session.docId] == null) {
                         collaborations[session.docId] = Collaboration()
                     }
                     collaborations[session.docId]!!.sessions.add(session)
-                    //session.send(collaborations[session.docId]!!.doc)
                     session.send("cmdlist," + WebRemoteControl.urls.keys.joinToString(","))
                 }
                 ws.onMessage { session, message ->
-                    if (message != "keepalive") logger.info("${session.remoteAddress.hostName} docId=${session.docId} msg: $message")
+                    logger.info("${session.remoteAddress.hostName} docId=${session.docId} msg: $message")
                     socketInstruct.instruct(message, session)
                 }
                 ws.onClose { session, _, _ ->

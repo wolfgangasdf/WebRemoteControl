@@ -1,25 +1,25 @@
 * {
-  margin: 0px;
-  padding: 0px;
+    margin: 0px;
+    padding: 0px;
 }
 
 html, body {
-  width:100%;
-  height:100%;
-  background-color:#EEE;
+    width:100%;
+    height:100%;
+    background-color:#EEE;
 }
 
 .content {
-  display:flex;
-  flex-direction:column;
-  width:100%;
-  height:100%;
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    height:100%;
 }
 
 .swipecontent {
-  display:flex;
-  flex-direction:column;
-  width:100%;
+    display:flex;
+    flex-direction:column;
+    width:100%;
 }
 
 .menu {
@@ -28,44 +28,45 @@ html, body {
     font-size: 5vh;
 }
 .contentitem {
-  width:100%;
-  flex-grow:0;
+    width:100%;
+    flex-grow:0;
 }
 ._inv_ {
     display: none;
 }
 
 .inputrow{
-  width:100%;
-  height:10vh;
-  display:flex;
+    width:100%;
+    height:10vh;
+    display:flex;
 }
 .placeholder {
-  flex-grow:1;
-  height:100%;
+    flex-grow:1;
+    height:100%;
+    font-size: 5vh;
 }
 .buttons{
-  width:20%;
-  height:100%;
-  font-size: 5vh;
+    width:20%;
+    height:100%;
+    font-size: 5vh;
 }
 .buttons6{
-  width:16%;
-  height:100%;
-  font-size: 5vh;
+    width:16%;
+    height:100%;
+    font-size: 5vh;
 }
 
 .trackpad-area{
-  flex-grow:1;
-  width:100%;
-  border-radius:10px;
-  background-color:#BBB;
+    flex-grow:1;
+    width:100%;
+    border-radius:10px;
+    background-color:#BBB;
 }
 
 #textinput{
-  width:20%;
-  height:90%;
-  font-size: large;
+    width:20%;
+    height:90%;
+    font-size: large;
 }
 
 #fblist {
