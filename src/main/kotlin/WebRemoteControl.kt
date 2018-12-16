@@ -34,7 +34,7 @@ object WebRemoteControl {
                 layout = java.awt.BorderLayout()
                 add(can, BorderLayout.CENTER)
                 add(object : Button("Close") { init {
-                    addActionListener { _ -> getParent().isVisible = false }
+                    addActionListener { getParent().isVisible = false }
                 } }, BorderLayout.SOUTH)
             }
         }
@@ -58,7 +58,7 @@ object WebRemoteControl {
                         collaborations[session.docId] = Collaboration()
                     }
                     collaborations[session.docId]!!.sessions.add(session)
-                    session.send("cmdlist," + WebRemoteControl.urls.keys.joinToString(","))
+                    session.send("cmdlist\t" + WebRemoteControl.urls.keys.joinToString("\t"))
                 }
                 ws.onMessage { session, message ->
                     logger.info("${session.remoteAddress.hostName} docId=${session.docId} msg: $message")
@@ -84,11 +84,11 @@ object WebRemoteControl {
         frame.layout = GridLayout(7, 1)
         frame.add(Label(infos))
         frame.add(Label("Listening on http://localhost:$httpServerPort"))
-        if (urlho != "") frame.add(object : Button("Show QR code <$urlho>") { init { addActionListener{ _ -> showQRCode(frame, urlho)}}})
-        if (urlip != "") frame.add(object : Button("Show QR code <$urlip>") { init { addActionListener{ _ -> showQRCode(frame, urlip)}}})
+        if (urlho != "") frame.add(object : Button("Show QR code <$urlho>") { init { addActionListener{ showQRCode(frame, urlho)}}})
+        if (urlip != "") frame.add(object : Button("Show QR code <$urlip>") { init { addActionListener{ showQRCode(frame, urlip)}}})
         frame.add(Label("Optional config file:"))
         frame.add(Label(Settings.getSettingsFile().toString()))
-        frame.add(object : Button("Quit") { init { addActionListener{ _ -> System.exit(0)}}})
+        frame.add(object : Button("Quit") { init { addActionListener{ System.exit(0)}}})
         frame.addWindowListener(object : WindowAdapter() {
             override fun windowClosing(e : WindowEvent) { System.exit(0) }
             override fun windowOpened(e: WindowEvent) { startServer() }

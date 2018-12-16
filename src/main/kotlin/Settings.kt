@@ -26,7 +26,7 @@ object Settings {
         WebRemoteControl.httpServerPort = props.getProperty("httpserverport").toInt()
         WebRemoteControl.urls.clear()
         props.getProperty("urls").split(";").map{
-            it -> WebRemoteControl.urls.put(it.split(",")[0], it.split(",")[1])
+            it -> WebRemoteControl.urls.put(it.split("\t")[0], it.split("\t")[1])
         }
     }
 

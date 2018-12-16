@@ -47,7 +47,7 @@ class SocketInstruct {
     )
 
     fun instruct(message: String, conn: WsSession) {
-        instructions = message.split(",")
+        instructions = message.split("\t")
         inputKind = instructions[0]
         when(inputKind) {
             "move" -> move(instructions[1].toInt(), instructions[2].toInt())
@@ -56,8 +56,8 @@ class SocketInstruct {
             "dragStart" -> robotHandle.pressLeftButton()
             "dragEnd" -> robotHandle.releaseLeftButton()
             "scroll" -> robotHandle.scroll(instructions[1].toInt())
-            "text" -> robotHandle.typeText(instructions.drop(1).joinToString(","))
-            "debug" -> logger.debug("JS: " + instructions.drop(1).joinToString(","))
+            "text" -> robotHandle.typeText(instructions.drop(1).joinToString("\t"))
+            "debug" -> logger.debug("JS: " + instructions.drop(1).joinToString("\t"))
             "key" -> robotHandle.clickKey(instructions[1].toInt())
             "combo" -> robotHandle.clickCombo(instructions.drop(1).map { s -> s.toInt() })
             "cmd" -> doCommand(instructions[1])

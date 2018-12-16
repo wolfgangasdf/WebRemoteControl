@@ -28,7 +28,7 @@ object FileBrowser {
         }
         currentFiles = currentFolder.listFiles(filter).toList()
     }
-    fun getFiles() = "fblist," + currentFiles.joinToString(",") { f -> f.name + (if (f.isDirectory) "/" else "")}
+    fun getFiles() = "fblist\t" + currentFiles.joinToString("\t") { f -> f.name + (if (f.isDirectory) "/" else "")}
     fun goUp() = updateFiles(currentFolder.parentFile)
 
     init {

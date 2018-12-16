@@ -164,10 +164,11 @@ function initwebsocket() {
 
     // react
     socket.onmessage = function (event) {
-        ss = event.data.split(",");
+        ss = event.data.split("\t");
         switch(ss[0]) {
             case "cmdlist":
                 select = document.getElementById('cmd');
+                while (select.lastChild.value !== "url") { select.removeChild(select.lastChild); } // remove all but first
                 for (var i = 1; i<ss.length; i++){
                     var opt = document.createElement('option');
                     opt.value = ss[i];
@@ -248,11 +249,11 @@ window.onload = function() {
     // events
     document.getElementById('textinput').onkeydown = function(event) {
         if (event.keyCode == 13) {
-            queue.push("text," + document.getElementById('textinput').value);
+            queue.push("text\t" + document.getElementById('textinput').value);
         }
     }
 
-    function pushclosure(a, b) { return function () { queue.push(a + "," + b) }; }
+    function pushclosure(a, b) { return function () { queue.push(a + "\t" + b) }; }
 
     autos = document.getElementsByClassName('bauto')
     for (i = 0; i < autos.length; i++) {
@@ -266,7 +267,7 @@ window.onload = function() {
 
     document.getElementById('cmd').addEventListener('change', function () {
         'use strict';
-        queue.push("cmd," + document.getElementById("cmd").value)
+        queue.push("cmd\t" + document.getElementById("cmd").value)
         document.getElementById("cmd").selectedIndex = 0;
     });
 
@@ -282,7 +283,7 @@ window.onload = function() {
         col = target.parentElement;
         row = col.parentElement;
         rX = row.rowIndex;
-        queue.push("fbopen," + rX)
+        queue.push("fbopen\t" + rX)
     });
 
     debug("window.onload: initialized!");
