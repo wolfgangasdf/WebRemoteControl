@@ -100,7 +100,7 @@ function loadtrackpad() {
         prevDeltaY = ev.deltaY;
 
         if(canEmit){
-            queue.push('move,' + dx + ',' + dy);
+            queue.push('move\t' + dx + '\t' + dy);
             canEmit = false;
             setTimeout(function(){ canEmit = true; }, 50);
         }
@@ -112,7 +112,7 @@ function loadtrackpad() {
         scrollAmount = ev.deltaY + (prevScrollAmount*-1);
         prevScrollAmount = ev.deltaY;
         if(canEmit){
-            queue.push('scroll,' + scrollAmount);
+            queue.push('scroll\t' + scrollAmount);
             canEmit = false;
             setTimeout(function() { canEmit = true; }, 50);
         }
