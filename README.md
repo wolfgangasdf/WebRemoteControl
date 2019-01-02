@@ -13,14 +13,10 @@ Note that there is no access control, everybody on the (local) network has acces
 
 * On the server:
     * Get the [Java 8 JRE](http://www.oracle.com/technetwork/java/javase/downloads/index.html). Don't forget to untick the [crapware](https://www.google.com/search?q=java+crapware) installer, and/or [disable it permanently](https://www.java.com/en/download/faq/disable_offers.xml)!
-    * [Download the jar](https://bitbucket.org/wolfgang/webremotecontrol/downloads).
+    * [Download the jar](https://github.com/wolfgangasdf/WebRemoteControl/releases).
     * Double-click to run the jar or do `java -jar webremotecontrol.jar` in a terminal.
     * Click on one of the buttons to show a QR code that contains the server URL and scan this with the client.
 * Client: Adding an icon to your homescreen should make a web app.
-
-
-![Screenshot_20170205-121604.png](https://bitbucket.org/repo/AxyGpB/images/1468820713-Screenshot_20170205-121604.png)
-(outdated)
 
 # Config file
 An optional config file `webremotecontrol.txt` can be placed next to the jar. Example content:
