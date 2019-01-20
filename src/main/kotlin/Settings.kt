@@ -18,7 +18,7 @@ object Settings {
         val ff = getSettingsFile()
         logger.debug("load config: settings file = " + ff.path)
         if (!ff.exists()) {
-            props["urls"] = "npo,https://www.npo.nl/mijn_npo#history;netflix,http://netflix.com;youtube,http://youtube.com;southpark,http://southpark.cc.com/full-episodes/random"
+            props["urls"] = "npo\thttps://www.npo.nl/mijn_npo#history;netflix\thttp://netflix.com;youtube\thttp://youtube.com;southpark\thttp://southpark.cc.com/full-episodes/random"
             props["httpserverport"] = "8000"
             save()
         }

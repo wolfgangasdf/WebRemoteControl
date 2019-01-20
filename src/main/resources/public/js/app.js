@@ -20,24 +20,25 @@ function debug(s) {
 
 function menuchanged() {
     'use strict';
-    var vis = document.getElementsByClassName('_vis_');
     var targetid = document.getElementById('menu').value;
-    var target = document.getElementById(targetid);
-    if (vis.length !== 0) {
-        vis[0].className = vis[0].className.replace('_vis_','_inv_');
-    }
-    if (target !== null ) {
-        target.className = target.className.replace('_inv_','_vis_');
-        var tpa = document.getElementById("cont-trackpadarea");
-        if (targetid == "cont-files") {
-            tpa.className = tpa.className.replace('_vis_','_inv_');
-        } else {
-            tpa.className = tpa.className.replace('_inv_','_vis_');
-            loadtrackpad();
-        }
-        if (targetid == "cont-files") {
-            queue.push("fbgetfiles")
-        }
+    document.getElementById("cont-basic").classList.add('_inv_');
+    document.getElementById("cont-vlc").classList.add('_inv_');
+    document.getElementById("cont-files").classList.add('_inv_');
+    document.getElementById("cont-files2").classList.add('_inv_');
+    document.getElementById("cont-trackpadarea").classList.add('_inv_');
+
+    if (targetid == "basic") {
+        document.getElementById("cont-basic").classList.remove('_inv_');
+        document.getElementById("cont-trackpadarea").classList.remove('_inv_');
+        loadtrackpad();
+    } else if (targetid == "vlc") {
+        document.getElementById("cont-vlc").classList.remove('_inv_');
+        document.getElementById("cont-trackpadarea").classList.remove('_inv_');
+        loadtrackpad();
+    } else if (targetid == "files") {
+        document.getElementById("cont-files").classList.remove('_inv_');
+        document.getElementById("cont-files2").classList.remove('_inv_');
+        queue.push("fbgetfiles")
     }
 }
 

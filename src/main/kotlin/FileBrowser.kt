@@ -26,7 +26,7 @@ object FileBrowser {
             Settings.props["lastfolder"] = currentFolder.absolutePath
             Settings.save()
         }
-        currentFiles = currentFolder.listFiles(filter).toList()
+        currentFiles = currentFolder.listFiles(filter).sortedBy { f -> f.name.toUpperCase() }.toList()
     }
     fun getFiles() = "fblist\t" + currentFiles.joinToString("\t") { f -> f.name + (if (f.isDirectory) "/" else "")}
     fun goUp() = updateFiles(currentFolder.parentFile)

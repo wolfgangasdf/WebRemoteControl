@@ -70,8 +70,11 @@ html, body {
 }
 
 #fblist {
-    width:100%;
     height:100%;
+    position:absolute;
+    overflow-x: auto;
+    overflow-y: scroll;
+    white-space: nowrap;
 }
 #fbtable {
     width:100%;
