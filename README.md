@@ -6,12 +6,14 @@ The views (use menu or swipe top rows to change):
 
 - Mouse/trackpad control, cursor, generic keys (e.g. for youtube, netflix).
 - [VLC](https://www.videolan.org/vlc/index.html) control buttons.
-- A filebrowser to open files, stores last visited folder.
+- A filebrowser to open movies/files.
+- A history of recently opened movies/files.
 
 # How to run
 Note that there is no access control, everybody on the (local) network has access to webremotecontrol!
 
 * On the server:
+    * Install [VLC](https://www.videolan.org/vlc/index.html) and make sure movies are [automatically](https://wiki.videolan.org/VLC_HowTo/Make_VLC_the_default_player/) opened with it.
     * Get the [Java 8 JRE](http://www.oracle.com/technetwork/java/javase/downloads/index.html). Don't forget to untick the [crapware](https://www.google.com/search?q=java+crapware) installer, and/or [disable it permanently](https://www.java.com/en/download/faq/disable_offers.xml)!
     * [Download the jar](https://github.com/wolfgangasdf/WebRemoteControl/releases).
     * Double-click to run the jar or do `java -jar webremotecontrol.jar` in a terminal.
@@ -19,10 +21,14 @@ Note that there is no access control, everybody on the (local) network has acces
 * Client: Adding an icon to your homescreen should make a web app.
 
 # Config file
-An optional config file `webremotecontrol.txt` can be placed next to the jar. Example content:
+The config file `webremotecontrol.txt` is automatically generated in the same folder as the jar. Example content:
 
     httpserverport=9000
     urls=npo,https\://www.npo.nl/mijn_npo\#history;netflix,http\://netflix.com;youtube,http\://youtube.com;southpark,http\://southpark.cc.com/full-episodes/random
+    vlc=/Applications/VLC.app or vlc=C\:\\Program Files\\VideoLAN\\VLC\\vlc.exe
+
+
+The `vlc` setting pointing to the VLC program is only needed to open `VIDEO_TS` DVD folders.
 
 # How to develop, compile & package
 

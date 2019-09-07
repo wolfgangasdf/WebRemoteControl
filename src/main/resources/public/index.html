@@ -15,6 +15,7 @@
                 <option value="basic">tp</option>
                 <option value="vlc">vlc</option>
                 <option value="files">fb</option>
+                <option value="history">hist</option>
             </select>
             <select class="menu" id="cmd">
                 <option value="url" disabled selected style="display:none;">url</option>
@@ -67,13 +68,24 @@
         <div id="cont-files" class="_inv_ contentitem">
             <div class="inputrow">
                 <div class="placeholder"></div>
+                <div id="currentpath"></div>
                 <button id="fbup" class="buttons">up</button>
             </div>
         </div>
+        <div id="cont-history" class="_inv_ contentitem">
+            <div class="inputrow">
+                <div class="placeholder"></div>
+            </div>
+        </div>
     </div>
-    <div id="cont-files2" class="_inv_ contentitem">
-        <div id="fblist" class="fblist">
-            <table id="fbtable"></table>
+    <div id="cont-files2" class="_inv_ contentitem2">
+        <div id="fblist" class="flist">
+            <table id="fbtable" class="ftable"></table>
+        </div>
+    </div>
+    <div id="cont-history2" class="_inv_ contentitem2">
+        <div id="hlist" class="flist">
+            <table id="htable" class="ftable"></table>
         </div>
     </div>
     <div id="cont-trackpadarea" class="_vis_ trackpad-area"></div>

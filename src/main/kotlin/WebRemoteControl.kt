@@ -1,8 +1,9 @@
 import io.javalin.Javalin
-import io.javalin.websocket.WsSession
+import io.javalin.websocket.WsContext
 import mu.KotlinLogging
 import net.glxn.qrgen.core.image.ImageType
 import net.glxn.qrgen.javase.QRCode
+import org.eclipse.jetty.websocket.api.Session
 import java.awt.*
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
@@ -10,10 +11,10 @@ import java.io.ByteArrayInputStream
 import java.net.InetAddress
 import java.util.concurrent.ConcurrentHashMap
 import javax.imageio.ImageIO
+import kotlin.system.exitProcess
 
-
-data class Collaboration(var doc: String = "", val sessions: MutableSet<WsSession> = ConcurrentHashMap.newKeySet())
-val WsSession.docId: String get() = this.pathParam("doc-id")
+data class Collaboration(var doc: String = "", val sessions: MutableSet<Session> = ConcurrentHashMap.newKeySet())
+val WsContext.docId: String get() = this.pathParam("doc-id")
 private val logger = KotlinLogging.logger {} // after set properties!
 
 object WebRemoteControl {
@@ -31,7 +32,7 @@ object WebRemoteControl {
 
         val dia = object : Dialog(parent, "QR code", true) {
             init {
-                layout = java.awt.BorderLayout()
+                layout = BorderLayout()
                 add(can, BorderLayout.CENTER)
                 add(object : Button("Close") { init {
                     addActionListener { getParent().isVisible = false }
@@ -47,31 +48,31 @@ object WebRemoteControl {
         val collaborations = ConcurrentHashMap<String, Collaboration>() // can be removed
         val socketInstruct = SocketInstruct()
 
-        val jl = Javalin.create().apply {
-            port(httpServerPort)
-            enableStaticFiles("/public")
-            enableStaticFiles("/META-INF/resources") // for hammer
+        val jl = Javalin.create {
+            it.addStaticFiles("/public")
+            it.addStaticFiles("/META-INF/resources") // for hammer
+        }.apply {
             ws("/docs/:doc-id") { ws ->
-                ws.onConnect { session ->
-                    logger.info("${session.remoteAddress.hostName} connected docId=${session.docId} !")
-                    if (collaborations[session.docId] == null) {
-                        collaborations[session.docId] = Collaboration()
+                ws.onConnect { ctx ->
+                    logger.info("${ctx.session.remoteAddress.hostName} connected docId=${ctx.docId} !")
+                    if (collaborations[ctx.docId] == null) {
+                        collaborations[ctx.docId] = Collaboration()
                     }
-                    collaborations[session.docId]!!.sessions.add(session)
-                    session.send("cmdlist\t" + WebRemoteControl.urls.keys.joinToString("\t"))
+                    collaborations[ctx.docId]!!.sessions.add(ctx.session)
+                    ctx.send("cmdlist\t" + urls.keys.joinToString("\t"))
                 }
-                ws.onMessage { session, message ->
-                    logger.info("${session.remoteAddress.hostName} docId=${session.docId} msg: $message")
-                    socketInstruct.instruct(message, session)
+                ws.onMessage { ctx ->
+                    logger.info("${ctx.session.remoteAddress.hostName} docId=${ctx.docId} msg: ${ctx.message()}")
+                    socketInstruct.instruct(ctx.message(), ctx)
                 }
-                ws.onClose { session, _, _ ->
-                    logger.info("${session.remoteAddress.hostName} closed docId=${session.docId} !")
-                    collaborations[session.docId]!!.sessions.remove(session)
+                ws.onClose { ctx ->
+                    logger.info("${ctx.session.remoteAddress.hostName} closed docId=${ctx.docId} !")
+                    collaborations[ctx.docId]!!.sessions.remove(ctx.session)
                 }
             }
         }
-        logger.info("Server started!")
-        jl.start()
+        logger.info("Starting server...")
+        jl.start(httpServerPort)
     }
 
     fun showGUI() {
@@ -88,9 +89,9 @@ object WebRemoteControl {
         if (urlip != "") frame.add(object : Button("Show QR code <$urlip>") { init { addActionListener{ showQRCode(frame, urlip)}}})
         frame.add(Label("Optional config file:"))
         frame.add(Label(Settings.getSettingsFile().toString()))
-        frame.add(object : Button("Quit") { init { addActionListener{ System.exit(0)}}})
+        frame.add(object : Button("Quit") { init { addActionListener{ exitProcess(0) }}})
         frame.addWindowListener(object : WindowAdapter() {
-            override fun windowClosing(e : WindowEvent) { System.exit(0) }
+            override fun windowClosing(e : WindowEvent) { exitProcess(0) }
             override fun windowOpened(e: WindowEvent) { startServer() }
         })
         frame.setSize(400, 300)

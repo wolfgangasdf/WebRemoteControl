@@ -2,7 +2,7 @@
 import mu.KotlinLogging
 
 
-fun main(args: Array<String>) {
+fun main() {
 
     System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE")
     System.setProperty("org.slf4j.simpleLogger.log.org.eclipse.jetty", "INFO")

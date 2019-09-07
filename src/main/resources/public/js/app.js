@@ -13,18 +13,21 @@ var queue = [];
 var socketrestarting = false;
 var socketlastrestartms = 0;
 var socketlastfailms = 0;
+var fbloadedfiles = false; // to keep highlight until folder changed
 
 function debug(s) {
     console.log("[" + window.location.hash.substr(1) + "] " + s);
 }
 
-function menuchanged() {
-    'use strict';
+'use strict';
+function menuchanged(reloadcontent = true) {
     var targetid = document.getElementById('menu').value;
     document.getElementById("cont-basic").classList.add('_inv_');
     document.getElementById("cont-vlc").classList.add('_inv_');
     document.getElementById("cont-files").classList.add('_inv_');
     document.getElementById("cont-files2").classList.add('_inv_');
+    document.getElementById("cont-history").classList.add('_inv_');
+    document.getElementById("cont-history2").classList.add('_inv_');
     document.getElementById("cont-trackpadarea").classList.add('_inv_');
 
     if (targetid == "basic") {
@@ -38,7 +41,11 @@ function menuchanged() {
     } else if (targetid == "files") {
         document.getElementById("cont-files").classList.remove('_inv_');
         document.getElementById("cont-files2").classList.remove('_inv_');
-        queue.push("fbgetfiles")
+        if (reloadcontent && !fbloadedfiles) queue.push("fbgetfiles");
+    } else if (targetid == "history") {
+        document.getElementById("cont-history").classList.remove('_inv_');
+        document.getElementById("cont-history2").classList.remove('_inv_');
+        if (reloadcontent) queue.push("hgethistory");
     }
 }
 
@@ -147,6 +154,13 @@ function loadtrackpad() {
     });
 }
 
+function showPage(idx, reloadcontent=false) {
+    if (menu.selectedIndex != idx) {
+        menu.selectedIndex = idx;
+        menuchanged(reloadcontent);
+    }
+}
+
 // init websocket. call after connection loss.
 function initwebsocket() {
     debug("initwebsocket");
@@ -166,6 +180,7 @@ function initwebsocket() {
     // react
     socket.onmessage = function (event) {
         ss = event.data.split("\t");
+        debug("onmessage: " + ss[0]);
         switch(ss[0]) {
             case "cmdlist":
                 select = document.getElementById('cmd');
@@ -178,11 +193,29 @@ function initwebsocket() {
                 }
                 break;
             case "fblist":
+                document.getElementById('currentpath').innerHTML = ss[1];
                 s = "";
-                for (i = 1; i < ss.length; i++) {
+                for (i = 2; i < ss.length; i++) {
                     s += "<tr><td><input type=\"button\" value=\"" + ss[i] + "\"></td></tr>";
                 }
                 document.getElementById('fbtable').innerHTML = s;
+                fbloadedfiles = true;
+                break;
+            case "fbreveal":
+                showPage(2, false);
+                var rows = document.querySelectorAll('#fbtable tr');
+                rows[Number(ss[1])].scrollIntoView({ block: 'center' });
+                rows[Number(ss[1])].className = "highlight";
+                break;
+            case "showvlc":
+                showPage(1, false);
+                break;
+            case "hlist":
+                s = "";
+                for (i = 1; i < ss.length; i++) {
+                    s += '<tr><td><button id="hdelete" class="hdelete" onclick="hdelete(' + i + ')">&#x274c;</button>' + "<input type=\"button\" value=\"" + ss[i] + "\"></td></tr>";
+                }
+                document.getElementById('htable').innerHTML = s;
                 break;
             default:
                 alert("received unknown command " + ss[0]);
@@ -190,6 +223,11 @@ function initwebsocket() {
         }
     }
 
+}
+
+function hdelete(i) {
+    queue.push("hdelete\t" + (i - 1))
+    queue.push("hgethistory");
 }
 
 // handles queue<>socket communication, reconnects
@@ -285,6 +323,17 @@ window.onload = function() {
         row = col.parentElement;
         rX = row.rowIndex;
         queue.push("fbopen\t" + rX)
+    });
+
+    // history
+    document.getElementById('htable').addEventListener('click', function (e) {
+        var target = e.target,
+            row, col, rX, cX;
+        if (target.type !== 'button') {return;}
+        col = target.parentElement;
+        row = col.parentElement;
+        rX = row.rowIndex;
+        queue.push("hopen\t" + rX)
     });
 
     debug("window.onload: initialized!");

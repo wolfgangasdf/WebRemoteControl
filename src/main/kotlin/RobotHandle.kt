@@ -23,6 +23,7 @@ class RobotHandle {
         robot.isAutoWaitForIdle = true
     }
 
+    @Suppress("SameParameterValue")
     private fun coerce(x: Int, min: Int, max: Int): Int = if (x < min) min else if (x > max) max else x
 
     // accellerated moving https://stackoverflow.com/a/8773322

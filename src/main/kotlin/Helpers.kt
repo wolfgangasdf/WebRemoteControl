@@ -1,3 +1,4 @@
+import mu.KotlinLogging
 import java.io.File
 import java.net.URI
 import java.awt.Desktop
@@ -5,6 +6,8 @@ import java.io.IOException
 import java.util.jar.JarFile
 import java.net.URISyntaxException
 import java.util.*
+
+private val logger = KotlinLogging.logger {}
 
 
 object Helpers {
@@ -27,6 +30,11 @@ object Helpers {
                 desktop.open(file)
             }
         }
+    }
+
+    fun runProgram(vararg s: String) {
+        logger.debug("launching: " + s.asList())
+        Runtime.getRuntime().exec(s)
     }
 
     // https://stackoverflow.com/a/22404140

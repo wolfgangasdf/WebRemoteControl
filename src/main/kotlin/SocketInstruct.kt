@@ -1,7 +1,9 @@
 
-import io.javalin.websocket.WsSession
+import io.javalin.websocket.WsContext
 import java.awt.event.KeyEvent
 import mu.KotlinLogging
+import java.io.File
+import kotlin.system.exitProcess
 
 private val logger = KotlinLogging.logger {}
 
@@ -46,9 +48,10 @@ class SocketInstruct {
         "vlccaudev" to listOf(KeyEvent.VK_SHIFT, KeyEvent.VK_A)
     )
 
-    fun instruct(message: String, conn: WsSession) {
+    fun instruct(message: String, ctx: WsContext) {
         instructions = message.split("\t")
         inputKind = instructions[0]
+        logger.debug("instruct: inputKind=$inputKind")
         when(inputKind) {
             "move" -> move(instructions[1].toInt(), instructions[2].toInt())
             "tap" -> robotHandle.tap()
@@ -62,19 +65,46 @@ class SocketInstruct {
             "combo" -> robotHandle.clickCombo(instructions.drop(1).map { s -> s.toInt() })
             "cmd" -> doCommand(instructions[1])
             "bauto" ->  combos[instructions[1]]?.let { robotHandle.clickCombo(it) }
-            "fbgetfiles" -> conn.send(FileBrowser.getFiles())
-            "fbup" -> { FileBrowser.goUp() ; conn.send(FileBrowser.getFiles()) }
+            "hgethistory" -> ctx.send("hlist\t" + Settings.historyGet())
+            "fbgetfiles" -> ctx.send(FileBrowser.getFiles())
+            "fbup" -> {
+                val oldf = FileBrowser.currentFolder
+                FileBrowser.goUp() ; ctx.send(FileBrowser.getFiles())
+                ctx.send("fbreveal\t${FileBrowser.currentFiles.indexOf(oldf)}")
+            }
             "fbopen" -> {
-             val f = FileBrowser.currentFiles[instructions[1].toInt()]
-             if (f.isDirectory) {
-                 FileBrowser.updateFiles(f)
-                 conn.send(FileBrowser.getFiles())
-             } else Helpers.openDocument(f)
-             conn.send(FileBrowser.getFiles())
+                val f = FileBrowser.currentFiles[instructions[1].toInt()]
+                if (!f.isDirectory) {
+                    Settings.historyAdd(f)
+                    Helpers.openDocument(f)
+                    ctx.send("showvlc")
+                } else if (f.name == "VIDEO_TS") {
+                    val vlcp = Settings.props.getProperty("vlc")
+                    if (vlcp != "") {
+                        Helpers.runProgram(if (vlcp.endsWith(".app")) "$vlcp/Contents/MacOS/VLC" else vlcp, f.absolutePath)
+                        Settings.historyAdd(f)
+                        ctx.send("showvlc")
+                    } else {
+                        logger.error("Set vlc path in settings file and restart to open VIDEO_TS folders!")
+                    }
+                } else {
+                    FileBrowser.updateFiles(f)
+                    ctx.send(FileBrowser.getFiles())
+                }
+            }
+            "hdelete" -> {
+                Settings.historyDelete(instructions[1].toInt())
+            }
+            "hopen" -> {
+                val i = instructions[1].toInt()
+                val f = File(Settings.historyGet(i))
+                FileBrowser.updateFiles(f.parentFile)
+                ctx.send(FileBrowser.getFiles())
+                ctx.send("fbreveal\t${FileBrowser.currentFiles.indexOf(f)}")
             }
             "exit" -> {
-             logger.info("exit")
-             System.exit(0)
+                logger.info("exit")
+                exitProcess(0)
             }
             else -> logger.error("invalid instruction: $message")
         }
