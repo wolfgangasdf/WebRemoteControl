@@ -34,7 +34,10 @@ object Helpers {
 
     fun runProgram(vararg s: String) {
         logger.debug("launching: " + s.asList())
-        Runtime.getRuntime().exec(s)
+        // don't use this, doesn't work with VIDEO_TS on win10: Runtime.getRuntime().exec(s)
+        val builder = ProcessBuilder(s.toList())
+        builder.inheritIO()
+        builder.start()
     }
 
     // https://stackoverflow.com/a/22404140

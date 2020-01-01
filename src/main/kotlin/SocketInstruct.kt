@@ -73,17 +73,20 @@ class SocketInstruct {
                 ctx.send("fbreveal\t${FileBrowser.currentFiles.indexOf(oldf)}")
             }
             "fbopen" -> {
+                fun openedPath(f: File) {
+                    Settings.historyAdd(f)
+                    ctx.send("fbreveal\t${FileBrowser.currentFiles.indexOf(f)}")
+                    ctx.send("showvlc")
+                }
                 val f = FileBrowser.currentFiles[instructions[1].toInt()]
                 if (!f.isDirectory) {
-                    Settings.historyAdd(f)
                     Helpers.openDocument(f)
-                    ctx.send("showvlc")
+                    openedPath(f)
                 } else if (f.name == "VIDEO_TS") {
                     val vlcp = Settings.props.getProperty("vlc")
                     if (vlcp != "") {
-                        Helpers.runProgram(if (vlcp.endsWith(".app")) "$vlcp/Contents/MacOS/VLC" else vlcp, f.absolutePath)
-                        Settings.historyAdd(f)
-                        ctx.send("showvlc")
+                        Helpers.runProgram(if (vlcp.endsWith(".app")) "$vlcp/Contents/MacOS/VLC" else vlcp, f.canonicalPath)
+                        openedPath(f)
                     } else {
                         logger.error("Set vlc path in settings file and restart to open VIDEO_TS folders!")
                     }
