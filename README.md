@@ -14,14 +14,13 @@ Note that there is no access control, everybody on the (local) network has acces
 
 * On the server:
     * Install [VLC](https://www.videolan.org/vlc/index.html) and make sure movies are [automatically](https://wiki.videolan.org/VLC_HowTo/Make_VLC_the_default_player/) opened with it.
-    * Get the [Java 8 JRE](http://www.oracle.com/technetwork/java/javase/downloads/index.html). Don't forget to untick the [crapware](https://www.google.com/search?q=java+crapware) installer, and/or [disable it permanently](https://www.java.com/en/download/faq/disable_offers.xml)!
-    * [Download the jar](https://github.com/wolfgangasdf/WebRemoteControl/releases).
-    * Double-click to run the jar or do `java -jar webremotecontrol.jar` in a terminal.
+    * [Download a zip](https://github.com/wolfgangasdf/WebRemoteControl/releases), extract it somewhere and run
+    `bin/WebRemoteControl.bat` (Windows) or `bin/WebRemoteControl` (Mac/Linux).
     * Click on one of the buttons to show a QR code that contains the server URL and scan this with the client.
 * Client: Adding an icon to your homescreen should make a web app.
 
 # Config file
-The config file `webremotecontrol.txt` is automatically generated in the same folder as the jar. Example content:
+The config file `webremotecontrol.txt` is automatically generated in the current folder. Example content:
 
     httpserverport=9000
     urls=npo,https\://www.npo.nl/mijn_npo\#history;netflix,http\://netflix.com;youtube,http\://youtube.com;southpark,http\://southpark.cc.com/full-episodes/random
@@ -41,8 +40,8 @@ The `vlc` setting pointing to the VLC program is only needed to open `VIDEO_TS` 
 # Used technologies
 
 * [Kotlin](https://kotlinlang.org/) and [Gradle](https://gradle.org/)
-* [Shadow](https://github.com/johnrengelman/shadow) to package
 * [Javalin](https://javalin.io/) as webserver
 * [Hammer.JS](http://hammerjs.github.io/) to capture touch events
 * [QRGen](https://github.com/kenglxn/QRGen) to generate the QR code
 * [js-mobile-console](https://github.com/B1naryStudio/js-mobile-console) for debugging
+* [Runtime plugin](https://github.com/beryx/badass-runtime-plugin) to make runtimes with JRE
