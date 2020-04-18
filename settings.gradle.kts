@@ -1,2 +1,2 @@
-rootProject.name = "WebRemoteControl"
+rootProject.name = "webremotecontrol"
 
