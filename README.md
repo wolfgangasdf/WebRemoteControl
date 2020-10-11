@@ -31,7 +31,7 @@ The `vlc` setting pointing to the VLC program is only needed to open `VIDEO_TS` 
 
 # How to develop, compile & package
 
-* Get Java 13 from https://jdk.java.net
+* Get Java 14 from https://jdk.java.net
 * Clone the repository
 * I use the free community version of [IntelliJ IDEA](https://www.jetbrains.com/idea/download/), just open the project to get started.
 * Compile and run manually: `./gradlew run`.

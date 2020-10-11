@@ -1,10 +1,8 @@
 
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-
-val kotlinversion = "1.3.61"
-group = "com.wolle"
 version = "1.0-SNAPSHOT"
+val kotlinversion = "1.4.10"
 
 println("Current Java version: ${JavaVersion.current()}")
 if (JavaVersion.current().majorVersion.toInt() < 14) throw GradleException("Use Java >= 14")
@@ -17,16 +15,16 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "1.3.61"
+    kotlin("jvm") version "1.4.10"
     id("idea")
     application
-    id("com.github.ben-manes.versions") version "0.27.0"
-    id("org.beryx.runtime") version "1.8.0"
+    id("com.github.ben-manes.versions") version "0.33.0"
+    id("org.beryx.runtime") version "1.11.4"
 }
 
 application {
     mainClassName = "MainKt"
-    //defaultTasks = tasks.run
+    applicationDefaultJvmArgs = listOf("-Dprism.verbose=true", "-Dprism.order=sw") // use software renderer
 }
 
 runtime {
@@ -46,9 +44,9 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinversion")
-    implementation("io.github.microutils:kotlin-logging:1.7.8")
+    implementation("io.github.microutils:kotlin-logging:2.0.3")
     implementation("org.slf4j:slf4j-simple:1.8.0-beta4") // no colors, everything stderr
-    implementation("io.javalin:javalin:3.7.0")
+    implementation("io.javalin:javalin:3.11.0")
     implementation("org.webjars:hammerjs:2.0.8")
     implementation("com.github.kenglxn.QRGen:javase:2.6.0")
 }

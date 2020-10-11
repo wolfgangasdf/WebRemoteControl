@@ -51,9 +51,9 @@ class RobotHandle {
     }
 
     fun secondaryTap() {
-        robot.mousePress(InputEvent.BUTTON3_MASK)
+        robot.mousePress(InputEvent.BUTTON3_DOWN_MASK)
         robot.delay(25)
-        robot.mouseRelease(InputEvent.BUTTON3_MASK)
+        robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK)
         robot.delay(25)
     }
 
@@ -110,11 +110,11 @@ class RobotHandle {
     }
 
     private fun robotPressLeftButton() {
-        robot.mousePress(InputEvent.BUTTON1_MASK)
+        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK)
     }
 
     private fun robotReleaseLeftButton() {
-        robot.mouseRelease(InputEvent.BUTTON1_MASK)
+        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK)
     }
 
 }
