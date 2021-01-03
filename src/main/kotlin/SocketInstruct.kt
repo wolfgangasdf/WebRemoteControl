@@ -82,7 +82,7 @@ class SocketInstruct {
                 if (!f.isDirectory) {
                     Helpers.openDocument(f)
                     openedPath(f)
-                } else if (f.name == "VIDEO_TS") {
+                } else if (f.name.toUpperCase() == "VIDEO_TS") {
                     val vlcp = Settings.props.getProperty("vlc")
                     if (vlcp != "") {
                         Helpers.runProgram(if (vlcp.endsWith(".app")) "$vlcp/Contents/MacOS/VLC" else vlcp, f.canonicalPath)

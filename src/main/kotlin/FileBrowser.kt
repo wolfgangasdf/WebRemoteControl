@@ -18,7 +18,7 @@ object FileBrowser {
         when {
             name.startsWith(".") -> false
             File(dir.absolutePath + "/" + name).isDirectory -> true
-            name.contains(".") -> openExtensions.contains(name.substring(name.lastIndexOf(".") + 1))
+            name.contains(".") -> openExtensions.contains(name.substring(name.lastIndexOf(".") + 1).toLowerCase())
             else -> false
         }
     }
