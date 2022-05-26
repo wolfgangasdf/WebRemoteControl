@@ -1,4 +1,5 @@
 import io.javalin.Javalin
+import io.javalin.http.staticfiles.Location
 import io.javalin.websocket.WsContext
 import mu.KotlinLogging
 import net.glxn.qrgen.core.image.ImageType
@@ -49,10 +50,10 @@ object WebRemoteControl {
         val socketInstruct = SocketInstruct()
 
         val jl = Javalin.create {
-            it.addStaticFiles("/public")
-            it.addStaticFiles("/META-INF/resources") // for hammer
+            it.addStaticFiles("/public", Location.CLASSPATH)
+            it.addStaticFiles("/META-INF/resources", Location.CLASSPATH) // for hammer
         }.apply {
-            ws("/docs/:doc-id") { ws ->
+            ws("/docs/{doc-id}") { ws ->
                 ws.onConnect { ctx ->
                     logger.info("${ctx.session.remoteAddress.hostName} connected docId=${ctx.docId} !")
                     if (collaborations[ctx.docId] == null) {
@@ -85,8 +86,8 @@ object WebRemoteControl {
         frame.layout = GridLayout(7, 1)
         frame.add(Label(infos))
         frame.add(Label("Listening on http://localhost:$httpServerPort"))
-        if (urlho != "") frame.add(object : Button("Show QR code <$urlho>") { init { addActionListener{ showQRCode(frame, urlho)}}})
-        if (urlip != "") frame.add(object : Button("Show QR code <$urlip>") { init { addActionListener{ showQRCode(frame, urlip)}}})
+        frame.add(object : Button("Show QR code <$urlho>") { init { addActionListener{ showQRCode(frame, urlho)}}})
+        frame.add(object : Button("Show QR code <$urlip>") { init { addActionListener{ showQRCode(frame, urlip)}}})
         frame.add(Label("Optional config file:"))
         frame.add(Label(Settings.getSettingsFile().toString()))
         frame.add(object : Button("Quit") { init { addActionListener{ exitProcess(0) }}})

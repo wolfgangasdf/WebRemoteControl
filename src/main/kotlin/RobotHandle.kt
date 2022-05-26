@@ -84,7 +84,7 @@ class RobotHandle {
 
         // http://stackoverflow.com/questions/15260282/converting-a-char-into-java-keyevent-keycode
         for (ch in text) {
-        val keyCode = KeyEvent.getExtendedKeyCodeForChar(ch.toInt())
+        val keyCode = KeyEvent.getExtendedKeyCodeForChar(ch.code)
         logger.debug(" keycode: " + keyCode + " xxx " + KeyEvent.VK_A)
         robot.keyPress(keyCode)
         robot.delay(10)

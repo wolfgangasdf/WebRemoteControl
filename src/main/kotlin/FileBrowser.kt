@@ -18,7 +18,7 @@ object FileBrowser {
         when {
             name.startsWith(".") -> false
             File(dir.absolutePath + "/" + name).isDirectory -> true
-            name.contains(".") -> openExtensions.contains(name.substring(name.lastIndexOf(".") + 1).toLowerCase())
+            name.contains(".") -> openExtensions.contains(name.substring(name.lastIndexOf(".") + 1).lowercase())
             else -> false
         }
     }
@@ -30,7 +30,7 @@ object FileBrowser {
             Settings.props["lastfolder"] = currentFolder.absolutePath
             Settings.save()
         }
-        currentFiles = currentFolder.listFiles(filter)?.sortedBy { f -> f.name.toUpperCase() }.orEmpty().toList()
+        currentFiles = currentFolder.listFiles(filter)?.sortedBy { f -> f.name.uppercase() }.orEmpty().toList()
     }
     fun getFiles() = "fblist\t$currentFolder\t" + currentFiles.joinToString("\t") { f -> f.name + (if (f.isDirectory) "/" else "")}
     fun goUp() = updateFiles(currentFolder.parentFile)
