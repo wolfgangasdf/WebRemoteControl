@@ -2,9 +2,9 @@
 Remote control the mouse and keyboard of a Mac/Windows/Linux computer from a html page, e.g. from a smartphone or a tablet.
 Adapted from https://github.com/simquat/LocalTrackpad.
 
-The views (use menu or swipe top rows to change):
+The views (dropdown menu or swipe top part left/right):
 
-- Mouse/trackpad control, cursor, generic keys (e.g. for youtube, netflix).
+- Mouse/trackpad control, cursor, generic keys (e.g. for youtube, netflix), send text.
 - [VLC](https://www.videolan.org/vlc/index.html) control buttons.
 - A filebrowser to open movies/files.
 - A history of recently opened movies/files.
@@ -14,7 +14,7 @@ Note that there is no access control, everybody on the (local) network has acces
 
 * On the server:
     * Install [VLC](https://www.videolan.org/vlc/index.html) and make sure movies are [automatically](https://wiki.videolan.org/VLC_HowTo/Make_VLC_the_default_player/) opened with it.
-    * [Download a zip](https://github.com/wolfgangasdf/WebRemoteControl/releases), extract it somewhere and run 
+    * [Download a zip](https://github.com/wolfgangasdf/WebRemoteControl/releases), extract it somewhere and run (in screen/tmux) 
     `bin/webremotecontrol.bat` (Windows) or `bin/webremotecontrol` (Mac/Linux). It is not signed, google for "open unsigned mac/win".
     * Click on one of the buttons to show a QR code that contains the server URL and scan this with the client.
 * Client: Adding an icon to your homescreen should make a web app.
@@ -31,11 +31,11 @@ The `vlc` setting pointing to the VLC program is only needed to open `VIDEO_TS` 
 
 # How to develop, compile & package
 
-* Get Java 14 from https://jdk.java.net
+* Get Java from https://jdk.java.net
 * Clone the repository
 * I use the free community version of [IntelliJ IDEA](https://www.jetbrains.com/idea/download/), just open the project to get started.
 * Compile and run manually: `./gradlew run`.
-* Package jar: `./gradlew clean dist`. The resulting jar is in `build/libs`.
+* Package: `./gradlew clean dist`. The builds are in `build/libs`.
 
 # Used technologies
 

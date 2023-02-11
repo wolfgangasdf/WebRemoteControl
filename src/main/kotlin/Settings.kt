@@ -57,7 +57,10 @@ object Settings {
 
     fun historyGet(): String = props.getProperty("history", "")
 
-    fun historyGet(idx: Int): String = historyGet().split("\t")[idx]
+    fun historyGet(idx: Int): String {
+        val ha = historyGet().split("\t")
+        return if (idx < ha.size) ha[idx] else ""
+    }
 
     init {
         load()

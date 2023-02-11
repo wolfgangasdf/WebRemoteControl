@@ -66,10 +66,18 @@ class SocketInstruct {
             "cmd" -> doCommand(instructions[1])
             "bauto" ->  combos[instructions[1]]?.let { robotHandle.clickCombo(it) }
             "hgethistory" -> ctx.send("hlist\t" + Settings.historyGet())
-            "fbgetfiles" -> ctx.send(FileBrowser.getFiles())
+            "fbgetfiles" -> {
+                ctx.send(FileBrowser.getFiles())
+                val fn = Settings.historyGet(0)
+                if (fn != "") {
+                    val f = File(fn)
+                    if (f.exists() && FileBrowser.currentFiles.contains(f)) ctx.send("fbreveal\t${FileBrowser.currentFiles.indexOf(f)}")
+                }
+            }
             "fbup" -> {
                 val oldf = FileBrowser.currentFolder
-                FileBrowser.goUp() ; ctx.send(FileBrowser.getFiles())
+                FileBrowser.goUp()
+                ctx.send(FileBrowser.getFiles())
                 ctx.send("fbreveal\t${FileBrowser.currentFiles.indexOf(oldf)}")
             }
             "fbopen" -> {
@@ -101,9 +109,11 @@ class SocketInstruct {
             "hopen" -> {
                 val i = instructions[1].toInt()
                 val f = File(Settings.historyGet(i))
-                FileBrowser.updateFiles(f.parentFile)
-                ctx.send(FileBrowser.getFiles())
-                ctx.send("fbreveal\t${FileBrowser.currentFiles.indexOf(f)}")
+                if (f.exists()) {
+                    FileBrowser.updateFiles(f.parentFile)
+                    ctx.send(FileBrowser.getFiles())
+                    ctx.send("fbreveal\t${FileBrowser.currentFiles.indexOf(f)}")
+                }
             }
             "exit" -> {
                 logger.info("exit")

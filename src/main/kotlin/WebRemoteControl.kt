@@ -44,18 +44,25 @@ object WebRemoteControl {
         dia.isVisible = true
     }
 
+    private fun getHostName(sa: java.net.SocketAddress?): String {
+        return if (sa != null) when (sa) {
+            is java.net.InetSocketAddress -> sa.hostName
+            else -> sa.toString()
+        } else "null"
+    }
+
     // https://github.com/tipsy/javalin-realtime-collaboration-example
     fun startServer() {
         val collaborations = ConcurrentHashMap<String, Collaboration>() // can be removed
         val socketInstruct = SocketInstruct()
 
-        val jl = Javalin.create {
-            it.addStaticFiles("/public", Location.CLASSPATH)
-            it.addStaticFiles("/META-INF/resources", Location.CLASSPATH) // for hammer
+        val jl = Javalin.create { config ->
+            config.staticFiles.add("/public", Location.CLASSPATH)
+            config.staticFiles.add("/META-INF/resources", Location.CLASSPATH) // for hammer
         }.apply {
             ws("/docs/{doc-id}") { ws ->
                 ws.onConnect { ctx ->
-                    logger.info("${ctx.session.remoteAddress.hostName} connected docId=${ctx.docId} !")
+                    logger.info("${getHostName(ctx.session.remoteAddress)} connected docId=${ctx.docId} !")
                     if (collaborations[ctx.docId] == null) {
                         collaborations[ctx.docId] = Collaboration()
                     }
@@ -63,11 +70,11 @@ object WebRemoteControl {
                     ctx.send("cmdlist\t" + urls.keys.joinToString("\t"))
                 }
                 ws.onMessage { ctx ->
-                    logger.info("${ctx.session.remoteAddress.hostName} docId=${ctx.docId} msg: ${ctx.message()}")
+                    logger.info("${getHostName(ctx.session.remoteAddress)} docId=${ctx.docId} msg: ${ctx.message()}")
                     socketInstruct.instruct(ctx.message(), ctx)
                 }
                 ws.onClose { ctx ->
-                    logger.info("${ctx.session.remoteAddress.hostName} closed docId=${ctx.docId} !")
+                    logger.info("${getHostName(ctx.session.remoteAddress)} closed docId=${ctx.docId} !")
                     collaborations[ctx.docId]!!.sessions.remove(ctx.session)
                 }
             }

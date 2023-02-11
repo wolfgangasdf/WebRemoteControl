@@ -24,7 +24,7 @@ object FileBrowser {
     }
 
     fun updateFiles(folder: File? = null) {
-        logger.info("listing folder $folder")
+        logger.info("updateFiles folder $folder")
         if (folder != null) {
             currentFolder = folder
             Settings.props["lastfolder"] = currentFolder.absolutePath
