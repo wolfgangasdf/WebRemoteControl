@@ -1,3 +1,5 @@
+@file:Suppress("JAVA_MODULE_DOES_NOT_EXPORT_PACKAGE") // needed to use com.apple.eawt, very strange
+
 import io.javalin.Javalin
 import io.javalin.http.staticfiles.Location
 import io.javalin.websocket.WsContext
@@ -5,18 +7,92 @@ import mu.KotlinLogging
 import net.glxn.qrgen.core.image.ImageType
 import net.glxn.qrgen.javase.QRCode
 import org.eclipse.jetty.websocket.api.Session
+import org.imgscalr.Scalr
 import java.awt.*
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.io.ByteArrayInputStream
+import java.io.File
 import java.net.InetAddress
 import java.util.concurrent.ConcurrentHashMap
 import javax.imageio.ImageIO
+import javax.swing.ImageIcon
+import javax.swing.JFrame
+import javax.swing.JLabel
+import kotlin.math.max
 import kotlin.system.exitProcess
+
 
 data class Collaboration(var doc: String = "", val sessions: MutableSet<Session> = ConcurrentHashMap.newKeySet())
 val WsContext.docId: String get() = this.pathParam("doc-id")
 private val logger = KotlinLogging.logger {} // after set properties!
+
+lateinit var picLabel: JLabel
+
+object ImageViewer {
+    var isShown = false
+    var shownImgeFilename = ""
+
+    private lateinit var iframe: JFrame
+    private var width: Int = 0
+    private var height: Int = 0
+    private lateinit var imageIcon: ImageIcon
+    private lateinit var lab: JLabel
+    private const val fullscreen = true // for debugging
+
+    fun show() {
+        if (isShown) return
+        iframe = JFrame("Image viewer")
+        picLabel = JLabel() //Create the Label to display the picture
+        iframe.add(picLabel)
+        iframe.isVisible = true
+        iframe.contentPane.background = Color.BLACK
+        if (fullscreen) {
+            val sd = GraphicsEnvironment.getLocalGraphicsEnvironment().defaultScreenDevice
+            if (Helpers.isMac()) {
+                // com.apple.eawt.FullScreenUtilities.setWindowCanFullScreen(iframe.rootPane,true)
+                com.apple.eawt.Application.getApplication().requestToggleFullScreen(iframe)
+            } else {
+                if (sd.isFullScreenSupported) {
+                    sd.fullScreenWindow = iframe
+                } else {
+                    logger.error("Full screen not supported")
+                    iframe.setSize(800, 600) // just something to let you see the window
+                    iframe.isVisible = true
+                }
+            }
+        } else {
+            iframe.minimumSize = Dimension(800,600)
+        }
+        val screenSize = Toolkit.getDefaultToolkit().screenSize
+        width = screenSize.getWidth().toInt()
+        height = screenSize.getHeight().toInt()
+        imageIcon = ImageIcon()
+        lab = JLabel(imageIcon) // variable needed to update images
+        iframe.add(lab)
+        isShown = true
+    }
+    fun hide() {
+        if (!isShown) return
+        iframe.dispose()
+        isShown = false
+    }
+    fun showImage(filename: String) {
+        if (!isShown) show()
+        logger.debug("showing image $filename")
+        val start = System.currentTimeMillis()
+        val bimg = ImageIO.read(File(filename))
+        logger.debug("XX read took ${System.currentTimeMillis()-start}ms")
+        val iwidth = bimg.width
+        val iheight = bimg.height
+        val fact = max(iwidth.toDouble() / width, iheight.toDouble() / height)
+        imageIcon.image = Scalr.resize(bimg, Scalr.Method.AUTOMATIC, (iwidth/fact).toInt(), (iheight/fact).toInt())
+        logger.debug("XX read+scale took ${System.currentTimeMillis()-start}ms")
+        lab.repaint() // update image!
+        logger.debug("XX read+scale+repaint took ${System.currentTimeMillis()-start}ms")
+        shownImgeFilename = filename
+    }
+}
 
 object WebRemoteControl {
     var httpServerPort = 8000
@@ -83,6 +159,7 @@ object WebRemoteControl {
         jl.start(httpServerPort)
     }
 
+
     fun showGUI() {
         val infos = "WebRemoteControl built ${Helpers.getClassBuildTime().toString()}"
         logger.info("Starting $infos")
@@ -105,5 +182,11 @@ object WebRemoteControl {
         frame.setSize(400, 300)
         frame.pack()
         frame.isVisible = true
+
+//        ImageViewer.show()
+//        ImageViewer.showImage("/Users/wolle/Pictures/IMG_0606.JPG")
+//        ImageViewer.showImage("/Users/wolle/Pictures/IMG_0607.JPG")
+//        ImageViewer.showImage("/Users/wolle/Pictures/IMG_0608.JPG")
+
     }
 }

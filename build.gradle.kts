@@ -30,6 +30,8 @@ kotlin {
 
 application {
     mainClass.set("MainKt")
+    applicationDefaultJvmArgs = listOf(//"-Dprism.verbose=true", "-Dprism.order=sw", // use software renderer
+        "--add-exports=java.desktop/com.apple.eawt=ALL-UNNAMED") // for mac fullscreen
 }
 
 repositories {
@@ -47,6 +49,7 @@ dependencies {
     implementation("io.javalin:javalin:5.4.2") { exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8") }
     implementation("org.webjars:hammerjs:2.0.8")
     implementation("com.github.kenglxn.QRGen:javase:3.0.1")
+    implementation("org.imgscalr:imgscalr-lib:4.2")
 }
 
 runtime {
@@ -82,6 +85,12 @@ runtime {
     }
     cPlatforms.forEach { setTargetPlatform(it) }
 }
+
+//tasks.withType(CreateStartScripts::class).forEach {script ->
+//    script.doFirst {
+//        script.classpath =  files("lib/*")
+//    }
+//}
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "$javaVersion"

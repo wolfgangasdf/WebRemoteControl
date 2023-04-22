@@ -200,15 +200,30 @@ function initwebsocket() {
                 }
                 document.getElementById('fbtable').innerHTML = s;
                 fbloadedfiles = true;
-                break;
-            case "fbreveal":
-                showPage(2, false);
                 var rows = document.querySelectorAll('#fbtable tr');
-                rows[Number(ss[1])].scrollIntoView({ block: 'center' });
-                rows[Number(ss[1])].className = "highlight";
+                if (rows.length > 0) rows[0].scrollIntoView({ block: 'center' });
+                break;
+            case "fbreveal": // rownumber, highlightode [0 nothing, 1 highlight additive, 2 remove all highlights before]
+                showPage(2, false);
+                let rowi=Number(ss[1]);
+                let mode=Number(ss[2]);
+                var rows = document.querySelectorAll('#fbtable tr');
+                rows[rowi].scrollIntoView({ block: 'center' });
+                if (mode == 2) {
+                    for (let i=0; i<rows.length; i++) rows[i].classList.remove('highlight')
+                }
+                if (mode > 0) {
+                    rows[rowi].className = "highlight";
+                }
                 break;
             case "showvlc":
                 showPage(1, false);
+                break;
+            case "showimg":
+                document.getElementById('imgrow').classList.remove('_inv_')
+                break;
+            case "hideimg":
+                document.getElementById('imgrow').classList.add('_inv_')
                 break;
             case "hlist":
                 s = "";
@@ -310,6 +325,12 @@ window.onload = function() {
         document.getElementById("cmd").selectedIndex = 0;
     });
 
+    // close tab button / close image viewer, better handle separately
+    document.getElementById('bclosetab').addEventListener('click', function() {
+        queue.push("bclosetab")
+    }, false);
+
+
     // file browser
     document.getElementById('fbup').addEventListener('click', function() {
         queue.push("fbup")
@@ -323,6 +344,14 @@ window.onload = function() {
         row = col.parentElement;
         rX = row.rowIndex;
         queue.push("fbopen\t" + rX)
+    });
+
+    // image viewer
+    document.getElementById('imgprev').addEventListener('click', function() {
+        queue.push("imgprev")
+    });
+    document.getElementById('imgnext').addEventListener('click', function() {
+        queue.push("imgnext")
     });
 
     // history

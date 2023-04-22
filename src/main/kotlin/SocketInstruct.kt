@@ -3,6 +3,7 @@ import io.javalin.websocket.WsContext
 import java.awt.event.KeyEvent
 import mu.KotlinLogging
 import java.io.File
+import javax.swing.SwingUtilities
 import kotlin.system.exitProcess
 
 private val logger = KotlinLogging.logger {}
@@ -24,7 +25,6 @@ class SocketInstruct {
         "bleft" to listOf(KeyEvent.VK_LEFT),
         "bright" to listOf(KeyEvent.VK_RIGHT),
         "bescape" to listOf(KeyEvent.VK_ESCAPE),
-        "bclosetab" to listOf(if (Helpers.isMac()) KeyEvent.VK_META else KeyEvent.VK_CONTROL, KeyEvent.VK_W),
         "vlcfullscreen" to (if (Helpers.isWin()) listOf(KeyEvent.VK_F) else listOf(KeyEvent.VK_META, KeyEvent.VK_F)),
         "vlcvoldown" to (if (Helpers.isWin()) listOf(KeyEvent.VK_CONTROL, KeyEvent.VK_DOWN) else listOf(KeyEvent.VK_DOWN)),
         "vlcvolup" to (if (Helpers.isWin()) listOf(KeyEvent.VK_CONTROL, KeyEvent.VK_UP) else listOf(KeyEvent.VK_UP)),
@@ -51,7 +51,18 @@ class SocketInstruct {
     fun instruct(message: String, ctx: WsContext) {
         instructions = message.split("\t")
         inputKind = instructions[0]
-        logger.debug("instruct: inputKind=$inputKind")
+
+        fun imgPrevNext(di: Int) {
+            val oldi = FileBrowser.currentFiles.indexOf(File(ImageViewer.shownImgeFilename))
+            var newi = oldi
+            do {
+                newi += di
+                if (newi < 0 || newi >= FileBrowser.currentFiles.size) return
+            } while (!FileBrowser.imageExtensions.contains(FileBrowser.currentFiles[newi].extension.lowercase()))
+            ImageViewer.showImage(FileBrowser.currentFiles[newi].absolutePath)
+            ctx.send("fbreveal\t$newi\t2")
+        }
+
         when(inputKind) {
             "move" -> move(instructions[1].toInt(), instructions[2].toInt())
             "tap" -> robotHandle.tap()
@@ -64,32 +75,47 @@ class SocketInstruct {
             "key" -> robotHandle.clickKey(instructions[1].toInt())
             "combo" -> robotHandle.clickCombo(instructions.drop(1).map { s -> s.toInt() })
             "cmd" -> doCommand(instructions[1])
-            "bauto" ->  combos[instructions[1]]?.let { robotHandle.clickCombo(it) }
+            "bauto" -> combos[instructions[1]]?.let { robotHandle.clickCombo(it) }
+            "bclosetab" -> {
+                if (ImageViewer.isShown) {
+                    ImageViewer.hide()
+                    ctx.send("hideimg")
+                } else {
+                    listOf(if (Helpers.isMac()) KeyEvent.VK_META else KeyEvent.VK_CONTROL, KeyEvent.VK_W).let { robotHandle.clickCombo(it) }
+                }
+            }
             "hgethistory" -> ctx.send("hlist\t" + Settings.historyGet())
             "fbgetfiles" -> {
                 ctx.send(FileBrowser.getFiles())
                 val fn = Settings.historyGet(0)
                 if (fn != "") {
                     val f = File(fn)
-                    if (f.exists() && FileBrowser.currentFiles.contains(f)) ctx.send("fbreveal\t${FileBrowser.currentFiles.indexOf(f)}")
+                    if (f.exists() && FileBrowser.currentFiles.contains(f)) ctx.send("fbreveal\t${FileBrowser.currentFiles.indexOf(f)}\t1")
                 }
             }
             "fbup" -> {
                 val oldf = FileBrowser.currentFolder
                 FileBrowser.goUp()
                 ctx.send(FileBrowser.getFiles())
-                ctx.send("fbreveal\t${FileBrowser.currentFiles.indexOf(oldf)}")
+                ctx.send("fbreveal\t${FileBrowser.currentFiles.indexOf(oldf)}\t1")
             }
             "fbopen" -> {
                 fun openedPath(f: File) {
                     Settings.historyAdd(f)
-                    ctx.send("fbreveal\t${FileBrowser.currentFiles.indexOf(f)}")
+                    ctx.send("fbreveal\t${FileBrowser.currentFiles.indexOf(f)}\t1")
                     ctx.send("showvlc")
                 }
                 val f = FileBrowser.currentFiles[instructions[1].toInt()]
                 if (!f.isDirectory) {
-                    Helpers.openDocument(f)
-                    openedPath(f)
+                    if (FileBrowser.imageExtensions.contains(f.extension.lowercase())) { // show image viewer!
+                        SwingUtilities.invokeAndWait {
+                            ImageViewer.showImage(f.absolutePath)
+                            ctx.send("showimg")
+                        }
+                    } else {
+                        Helpers.openDocument(f)
+                        openedPath(f)
+                    }
                 } else if (f.name.uppercase() == "VIDEO_TS") {
                     val vlcp = Settings.props.getProperty("vlc")
                     if (vlcp != "") {
@@ -103,6 +129,12 @@ class SocketInstruct {
                     ctx.send(FileBrowser.getFiles())
                 }
             }
+            "imgprev" -> {
+                imgPrevNext(-1)
+            }
+            "imgnext" -> {
+                imgPrevNext(1)
+            }
             "hdelete" -> {
                 Settings.historyDelete(instructions[1].toInt())
             }
@@ -112,7 +144,7 @@ class SocketInstruct {
                 if (f.exists()) {
                     FileBrowser.updateFiles(f.parentFile)
                     ctx.send(FileBrowser.getFiles())
-                    ctx.send("fbreveal\t${FileBrowser.currentFiles.indexOf(f)}")
+                    ctx.send("fbreveal\t${FileBrowser.currentFiles.indexOf(f)}\t1")
                 }
             }
             "exit" -> {

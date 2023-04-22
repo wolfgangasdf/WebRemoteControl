@@ -6,7 +6,7 @@ The views (dropdown menu or swipe top part left/right):
 
 - Mouse/trackpad control, cursor, generic keys (e.g. for youtube, netflix), send text.
 - [VLC](https://www.videolan.org/vlc/index.html) control buttons.
-- A filebrowser to open movies/files.
+- A filebrowser to open movies/files, and to view photos/images (but imageIO.read is slow)
 - A history of recently opened movies/files.
 
 # How to run
@@ -45,3 +45,4 @@ The `vlc` setting pointing to the VLC program is only needed to open `VIDEO_TS` 
 * [QRGen](https://github.com/kenglxn/QRGen) to generate the QR code
 * [js-mobile-console](https://github.com/B1naryStudio/js-mobile-console) for debugging
 * [Runtime plugin](https://github.com/beryx/badass-runtime-plugin) to make runtimes with JRE
+* [Imgscalr](https://github.com/rkalla/imgscalr) for fast image scaling

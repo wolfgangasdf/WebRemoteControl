@@ -44,7 +44,7 @@ html, body {
 }
 
 ._inv_ {
-    display: none;
+    display: none !important;
 }
 
 .inputrow{
