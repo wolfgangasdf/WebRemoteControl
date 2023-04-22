@@ -200,6 +200,8 @@ function initwebsocket() {
                 }
                 document.getElementById('fbtable').innerHTML = s;
                 fbloadedfiles = true;
+                var rows = document.querySelectorAll('#fbtable tr');
+                if (rows.length > 0) rows[0].scrollIntoView({ block: 'center' });
                 break;
             case "fbreveal":
                 showPage(2, false);
