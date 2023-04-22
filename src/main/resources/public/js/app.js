@@ -28,6 +28,7 @@ function menuchanged(reloadcontent = true) {
     document.getElementById("cont-files2").classList.add('_inv_');
     document.getElementById("cont-history").classList.add('_inv_');
     document.getElementById("cont-history2").classList.add('_inv_');
+    document.getElementById("cont-imageviewer").classList.add('_inv_');
     document.getElementById("cont-trackpadarea").classList.add('_inv_');
 
     if (targetid == "basic") {
@@ -46,6 +47,8 @@ function menuchanged(reloadcontent = true) {
         document.getElementById("cont-history").classList.remove('_inv_');
         document.getElementById("cont-history2").classList.remove('_inv_');
         if (reloadcontent) queue.push("hgethistory");
+    } else if (targetid == "imageviewer") {
+        document.getElementById("cont-imageviewer").classList.remove('_inv_');
     }
 }
 
@@ -209,8 +212,14 @@ function initwebsocket() {
                 rows[Number(ss[1])].scrollIntoView({ block: 'center' });
                 rows[Number(ss[1])].className = "highlight";
                 break;
+            case "showfb":
+                showPage(2, false);
+                break;
             case "showvlc":
                 showPage(1, false);
+                break;
+            case "showiv":
+                showPage(4, false);
                 break;
             case "hlist":
                 s = "";

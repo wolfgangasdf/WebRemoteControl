@@ -25,6 +25,8 @@ class SocketInstruct {
         "bright" to listOf(KeyEvent.VK_RIGHT),
         "bescape" to listOf(KeyEvent.VK_ESCAPE),
         "bclosetab" to listOf(if (Helpers.isMac()) KeyEvent.VK_META else KeyEvent.VK_CONTROL, KeyEvent.VK_W),
+        "vlcquit" to if (Helpers.isMac()) listOf(KeyEvent.VK_META, KeyEvent.VK_Q) else listOf(KeyEvent.VK_ALT, KeyEvent.VK_F4),
+        "vlcquit2" to if (Helpers.isMac()) listOf(KeyEvent.VK_META, KeyEvent.VK_Q) else listOf(KeyEvent.VK_ALT, KeyEvent.VK_F4),
         "vlcfullscreen" to (if (Helpers.isWin()) listOf(KeyEvent.VK_F) else listOf(KeyEvent.VK_META, KeyEvent.VK_F)),
         "vlcvoldown" to (if (Helpers.isWin()) listOf(KeyEvent.VK_CONTROL, KeyEvent.VK_DOWN) else listOf(KeyEvent.VK_DOWN)),
         "vlcvolup" to (if (Helpers.isWin()) listOf(KeyEvent.VK_CONTROL, KeyEvent.VK_UP) else listOf(KeyEvent.VK_UP)),
@@ -45,7 +47,9 @@ class SocketInstruct {
         "vlccsubti" to listOf(if (Helpers.isWin()) KeyEvent.VK_V else KeyEvent.VK_S),
         "vlccaspect" to listOf(KeyEvent.VK_A),
         "vlcccrop" to listOf(KeyEvent.VK_C),
-        "vlccaudev" to listOf(KeyEvent.VK_SHIFT, KeyEvent.VK_A)
+        "vlccaudev" to listOf(KeyEvent.VK_SHIFT, KeyEvent.VK_A),
+        "ivprev" to listOf(KeyEvent.VK_META, KeyEvent.VK_LEFT),
+        "ivnext" to listOf(KeyEvent.VK_META, KeyEvent.VK_RIGHT)
     )
 
     fun instruct(message: String, ctx: WsContext) {
@@ -64,7 +68,12 @@ class SocketInstruct {
             "key" -> robotHandle.clickKey(instructions[1].toInt())
             "combo" -> robotHandle.clickCombo(instructions.drop(1).map { s -> s.toInt() })
             "cmd" -> doCommand(instructions[1])
-            "bauto" ->  combos[instructions[1]]?.let { robotHandle.clickCombo(it) }
+            "bauto" ->  {
+                combos[instructions[1]]?.let { robotHandle.clickCombo(it) }
+                if (instructions[1].startsWith("vlcquit")) {
+                    ctx.send("showfb")
+                }
+            }
             "hgethistory" -> ctx.send("hlist\t" + Settings.historyGet())
             "fbgetfiles" -> {
                 ctx.send(FileBrowser.getFiles())
@@ -88,12 +97,19 @@ class SocketInstruct {
                 }
                 val f = FileBrowser.currentFiles[instructions[1].toInt()]
                 if (!f.isDirectory) {
-                    Helpers.openDocument(f)
-                    openedPath(f)
+                    if (f.extension == "jpg") { // load all jpgs in folder
+                        val args = mutableListOf<String>("--fullscreen", "--image-duration=-1")
+                        args.addAll(FileBrowser.currentFiles.map { it.canonicalPath })
+                        Helpers.runVLC(*(args.toTypedArray()))
+                        ctx.send("showiv")
+                    } else {
+                        Helpers.openDocument(f)
+                        openedPath(f)
+                    }
                 } else if (f.name.uppercase() == "VIDEO_TS") {
                     val vlcp = Settings.props.getProperty("vlc")
                     if (vlcp != "") {
-                        Helpers.runProgram(if (vlcp.endsWith(".app")) "$vlcp/Contents/MacOS/VLC" else vlcp, f.canonicalPath)
+                        Helpers.runVLC(f.canonicalPath)
                         openedPath(f)
                     } else {
                         logger.error("Set vlc path in settings file and restart to open VIDEO_TS folders!")

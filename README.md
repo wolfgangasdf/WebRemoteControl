@@ -7,6 +7,7 @@ The views (dropdown menu or swipe top part left/right):
 - Mouse/trackpad control, cursor, generic keys (e.g. for youtube, netflix), send text.
 - [VLC](https://www.videolan.org/vlc/index.html) control buttons.
 - A filebrowser to open movies/files.
+- If a jpg file is opened, all jpg's in the current folder are shown in VLC as image viewer 
 - A history of recently opened movies/files.
 
 # How to run

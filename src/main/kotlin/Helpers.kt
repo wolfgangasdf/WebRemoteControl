@@ -32,6 +32,19 @@ object Helpers {
         }
     }
 
+    fun runVLC(vararg s: String): Boolean {
+        val vlcp = Settings.props.getProperty("vlc")
+        return if (vlcp != "") {
+            val l = mutableListOf<String>(if (vlcp.endsWith(".app")) "$vlcp/Contents/MacOS/VLC" else vlcp)
+            l.addAll(s.toList())
+            runProgram(*(l.toTypedArray()))
+            true
+        } else {
+            logger.error("Set vlc path in settings file and restart to open VIDEO_TS folders!")
+            false
+        }
+    }
+
     fun runProgram(vararg s: String) {
         logger.debug("launching: " + s.asList())
         // don't use this, doesn't work with VIDEO_TS on win10: Runtime.getRuntime().exec(s)
