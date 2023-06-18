@@ -29,6 +29,7 @@ function menuchanged(reloadcontent = true) {
     document.getElementById("cont-history").classList.add('_inv_');
     document.getElementById("cont-history2").classList.add('_inv_');
     document.getElementById("cont-imageviewer").classList.add('_inv_');
+    document.getElementById("cont-imageviewer2").classList.add('_inv_');
     document.getElementById("cont-trackpadarea").classList.add('_inv_');
 
     if (targetid == "basic") {
@@ -49,6 +50,7 @@ function menuchanged(reloadcontent = true) {
         if (reloadcontent) queue.push("hgethistory");
     } else if (targetid == "imageviewer") {
         document.getElementById("cont-imageviewer").classList.remove('_inv_');
+        document.getElementById("cont-imageviewer2").classList.remove('_inv_');
     }
 }
 

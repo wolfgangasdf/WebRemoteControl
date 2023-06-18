@@ -67,6 +67,16 @@ html, body {
     height:100%;
     font-size: 5vh;
 }
+.tallrow{
+    width:100%;
+    height:100%;
+    display:flex;
+}
+.buttonslarge{
+    width:40%;
+    height:100%;
+    font-size: 10vh;
+}
 
 .trackpad-area{
     flex-grow:1;
