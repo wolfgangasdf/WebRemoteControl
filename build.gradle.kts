@@ -4,9 +4,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
 version = "1.0-SNAPSHOT"
-val cPlatforms = listOf("mac") // compile for these platforms. "mac", "linux", "win"
+val cPlatforms = listOf("mac") // compile for these platforms. "mac", "mac-aarch64", "linux", "win"
 val kotlinVersion = "1.8.20"
-val javaVersion = 18 // 19 doesn't work yet, bug with font manager on mac
+val javaVersion = 19 // 19 doesn't work yet, bug with font manager on mac
 println("Current Java version: ${JavaVersion.current()}")
 if (JavaVersion.current().majorVersion.toInt() != javaVersion) throw GradleException("Use Java $javaVersion")
 
@@ -60,8 +60,9 @@ runtime {
     fun setTargetPlatform(jfxplatformname: String) {
         val platf = if (jfxplatformname == "win") "windows" else jfxplatformname // jfx expects "win" but adoptium needs "windows"
         val os = org.gradle.internal.os.OperatingSystem.current()
-        val oss = if (os.isLinux) "linux" else if (os.isWindows) "windows" else if (os.isMacOsX) "mac" else ""
+        var oss = if (os.isLinux) "linux" else if (os.isWindows) "windows" else if (os.isMacOsX) "mac" else ""
         if (oss == "") throw GradleException("unsupported os")
+        if (System.getProperty("os.arch") == "aarch64") oss += "-aarch64"// https://github.com/openjfx/javafx-gradle-plugin#4-cross-platform-projects-and-libraries
         if (oss == platf) {
             targetPlatform(jfxplatformname, javaToolchains.launcherFor(java.toolchain).get().executablePath.asFile.parentFile.parentFile.absolutePath)
         } else { // https://api.adoptium.net/q/swagger-ui/#/Binary/getBinary
