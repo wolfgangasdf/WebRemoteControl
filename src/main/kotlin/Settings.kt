@@ -22,10 +22,12 @@ object Settings {
         props.putIfAbsent("urls", "npo\thttps://www.npo.nl/mijn_npo#history;netflix\thttp://netflix.com;youtube\thttp://youtube.com;southpark\thttp://southpark.cc.com/full-episodes/random")
         props.putIfAbsent("httpserverport", "8000")
         props.putIfAbsent("vlc", "")
+        props.putIfAbsent("keyclickdelay", "10")
         save()
 
         WebRemoteControl.httpServerPort = props.getProperty("httpserverport").toInt()
         WebRemoteControl.urls.clear()
+        RobotHandle.keyClickDelay = props.getProperty("keyclickdelay").toInt()
         props.getProperty("urls").split(";").map{
             WebRemoteControl.urls.put(it.split("\t")[0], it.split("\t")[1])
         }

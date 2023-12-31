@@ -300,7 +300,12 @@ window.onload = function() {
 
     // events
     document.getElementById('textinput').onkeydown = function(event) {
-        if (event.keyCode == 13) {
+        let autosend = document.getElementById('autosend').checked;
+        if (autosend) {
+            queue.push("key\t" + event.keyCode);
+            document.getElementById('textinput').value = "";
+        }
+        else if (event.keyCode == 13) {
             queue.push("text\t" + document.getElementById('textinput').value);
         }
     }

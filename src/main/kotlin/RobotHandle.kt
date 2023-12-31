@@ -10,6 +10,10 @@ private val logger = KotlinLogging.logger {}
 
 class RobotHandle {
 
+    companion object {
+        public var keyClickDelay = 10
+    }
+
     private val robot = Robot()
 
     private fun getScreenSize() = Toolkit.getDefaultToolkit().screenSize
@@ -87,25 +91,28 @@ class RobotHandle {
         val keyCode = KeyEvent.getExtendedKeyCodeForChar(ch.code)
         logger.debug(" keycode: " + keyCode + " xxx " + KeyEvent.VK_A)
         robot.keyPress(keyCode)
-        robot.delay(10)
+        robot.delay(keyClickDelay)
         robot.keyRelease(keyCode)
         robot.delay(50)
     }
     }
 
     fun clickKey(keycode: Int) {
-        clickCombo(listOf(keycode))
+        logger.debug("robot: click keycode " + keycode)
+        robot.keyPress(keycode)
+        robot.delay(keyClickDelay)
+        robot.keyRelease(keycode)
     }
 
     fun clickCombo(c: List<Int>) {
         logger.debug("robot: click combo " + c.joinToString(","))
         for (k in c) robot.keyPress(k)
-        robot.delay(10)
+        robot.delay(keyClickDelay)
         for (k in c.reversed()) robot.keyRelease(k)
     }
 
     private fun robotMoveAbs(x: Int, y: Int) {
-        robot.delay(10)
+        robot.delay(keyClickDelay)
         robot.mouseMove(x, y)
     }
 
