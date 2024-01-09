@@ -1,17 +1,19 @@
+import mu.KotlinLogging
 import java.awt.MouseInfo
 import java.awt.Robot
 import java.awt.Toolkit
+import java.awt.datatransfer.StringSelection
 import java.awt.event.InputEvent
 import java.awt.event.KeyEvent
-import mu.KotlinLogging
 import kotlin.math.sqrt
+
 
 private val logger = KotlinLogging.logger {}
 
 class RobotHandle {
 
     companion object {
-        public var keyClickDelay = 10
+        var keyClickDelay = 10
     }
 
     private val robot = Robot()
@@ -74,34 +76,31 @@ class RobotHandle {
         robotReleaseLeftButton()
     }
 
-    fun typeText(text: String) {
-        logger.debug("robot: type [$text]")
-        // http://stackoverflow.com/a/29665705
-//    val stringSelection = new StringSelection(text)
-//    val clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
-//    clipboard.setContents(stringSelection, stringSelection)
-//
-//    robot.keyPress(KeyEvent.VK_CONTROL)
-//    robot.keyPress(KeyEvent.VK_V)
-//    robot.keyRelease(KeyEvent.VK_V)
-//    robot.keyRelease(KeyEvent.VK_CONTROL)
-
-        // http://stackoverflow.com/questions/15260282/converting-a-char-into-java-keyevent-keycode
-        for (ch in text) {
-        val keyCode = KeyEvent.getExtendedKeyCodeForChar(ch.code)
-        logger.debug(" keycode: " + keyCode + " xxx " + KeyEvent.VK_A)
-        robot.keyPress(keyCode)
+    // this does not work for @ and others - keyboard specific.
+    fun clickChar(c: Char) {
+        logger.debug("robot: click char: $c")
+        val kc = c.uppercaseChar().code
+        if (c.isUpperCase()) {
+            robot.keyPress(KeyEvent.VK_SHIFT)
+        }
+        robot.keyPress(kc)
         robot.delay(keyClickDelay)
-        robot.keyRelease(keyCode)
-        robot.delay(50)
-    }
+        robot.keyRelease(kc)
+        if (c.isUpperCase()) {
+            robot.keyRelease(KeyEvent.VK_SHIFT)
+        }
     }
 
-    fun clickKey(keycode: Int) {
-        logger.debug("robot: click keycode " + keycode)
-        robot.keyPress(keycode)
+    fun pasteText(s: String) {
+        logger.debug("robot: pastetext: $s")
+        val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+        val stringSelection = StringSelection(s.replace("\\n", "\n"))
+        clipboard.setContents(stringSelection, null)
+        robot.keyPress(if (Helpers.isMac()) KeyEvent.VK_META else KeyEvent.VK_CONTROL)
+        robot.keyPress(KeyEvent.VK_V)
         robot.delay(keyClickDelay)
-        robot.keyRelease(keycode)
+        robot.keyRelease(KeyEvent.VK_V)
+        robot.keyRelease(if (Helpers.isMac()) KeyEvent.VK_META else KeyEvent.VK_CONTROL)
     }
 
     fun clickCombo(c: List<Int>) {
