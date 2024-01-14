@@ -25,8 +25,7 @@ class SocketInstruct {
         "bright" to listOf(KeyEvent.VK_RIGHT),
         "bescape" to listOf(KeyEvent.VK_ESCAPE),
         "bclosetab" to listOf(if (Helpers.isMac()) KeyEvent.VK_META else KeyEvent.VK_CONTROL, KeyEvent.VK_W),
-        "vlcquit" to if (Helpers.isMac()) listOf(KeyEvent.VK_META, KeyEvent.VK_Q) else listOf(KeyEvent.VK_ALT, KeyEvent.VK_F4),
-        "vlcquit2" to if (Helpers.isMac()) listOf(KeyEvent.VK_META, KeyEvent.VK_Q) else listOf(KeyEvent.VK_ALT, KeyEvent.VK_F4),
+        "quit" to  if (Helpers.isMac()) listOf(KeyEvent.VK_META, KeyEvent.VK_Q) else listOf(KeyEvent.VK_ALT, KeyEvent.VK_F4),
         "vlcfullscreen" to (if (Helpers.isWin()) listOf(KeyEvent.VK_F) else listOf(KeyEvent.VK_META, KeyEvent.VK_F)),
         "vlcvoldown" to (if (Helpers.isWin()) listOf(KeyEvent.VK_CONTROL, KeyEvent.VK_DOWN) else listOf(KeyEvent.VK_DOWN)),
         "vlcvolup" to (if (Helpers.isWin()) listOf(KeyEvent.VK_CONTROL, KeyEvent.VK_UP) else listOf(KeyEvent.VK_UP)),
@@ -63,16 +62,12 @@ class SocketInstruct {
             "dragStart" -> robotHandle.pressLeftButton()
             "dragEnd" -> robotHandle.releaseLeftButton()
             "scroll" -> robotHandle.scroll(instructions[1].toInt())
-            "text" -> robotHandle.typeText(instructions.drop(1).joinToString("\t"))
             "debug" -> logger.debug("JS: " + instructions.drop(1).joinToString("\t"))
-            "key" -> robotHandle.clickKey(instructions[1].toInt())
-            "combo" -> robotHandle.clickCombo(instructions.drop(1).map { s -> s.toInt() })
+            "char" -> robotHandle.clickChar(instructions[1][0])
+            "pastetext" -> robotHandle.pasteText(instructions[1])
             "cmd" -> doCommand(instructions[1])
             "bauto" ->  {
                 combos[instructions[1]]?.let { robotHandle.clickCombo(it) }
-                if (instructions[1].startsWith("vlcquit")) {
-                    ctx.send("showfb")
-                }
             }
             "hgethistory" -> ctx.send("hlist\t" + Settings.historyGet())
             "fbgetfiles" -> {

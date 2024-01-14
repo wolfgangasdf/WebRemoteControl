@@ -299,11 +299,17 @@ window.onload = function() {
     loadswiper();
 
     // events
-    document.getElementById('textinput').onkeydown = function(event) {
-        if (event.keyCode == 13) {
-            queue.push("text\t" + document.getElementById('textinput').value);
+    document.getElementById('charinput').addEventListener("textInput", (event) => {
+        queue.push("char\t" + event.data);
+        document.getElementById('charinput').value = "";
+    })
+
+    document.getElementById('bpastetext').addEventListener("click", (event) => {
+        var res = prompt("Send this text:", "\\n");
+        if (res != null && res != "") {
+            queue.push("pastetext\t" + res);
         }
-    }
+    })
 
     function pushclosure(a, b) { return function () { queue.push(a + "\t" + b) }; }
 

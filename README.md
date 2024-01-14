@@ -26,9 +26,11 @@ The config file `webremotecontrol.txt` is automatically generated in the current
     httpserverport=9000
     urls=npo,https\://www.npo.nl/mijn_npo\#history;netflix,http\://netflix.com;youtube,http\://youtube.com;southpark,http\://southpark.cc.com/full-episodes/random
     vlc=/Applications/VLC.app or vlc=C\:\\Program Files\\VideoLAN\\VLC\\vlc.exe
+    keyclickdelay=10
 
 
-The `vlc` setting pointing to the VLC program is only needed to open `VIDEO_TS` DVD folders.
+- The `vlc` setting pointing to the VLC program is only needed to open `VIDEO_TS` DVD folders.
+- The `keyclickdelay` setting is the delay between key press and its release in milliseconds. **Warning** long delays can make your computer input more than one character per key press.
 
 # How to develop, compile & package
 
