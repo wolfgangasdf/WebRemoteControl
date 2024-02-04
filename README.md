@@ -45,6 +45,6 @@ The config file `webremotecontrol.txt` is automatically generated in the current
 * [Kotlin](https://kotlinlang.org/) and [Gradle](https://gradle.org/)
 * [Javalin](https://javalin.io/) as webserver
 * [Hammer.JS](http://hammerjs.github.io/) to capture touch events
-* [QRGen](https://github.com/kenglxn/QRGen) to generate the QR code
+* [qrcode-kotlin](https://github.com/g0dkar/qrcode-kotlin) to generate the QR code
 * [js-mobile-console](https://github.com/B1naryStudio/js-mobile-console) for debugging
 * [Runtime plugin](https://github.com/beryx/badass-runtime-plugin) to make runtimes with JRE

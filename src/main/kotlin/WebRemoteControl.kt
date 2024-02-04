@@ -2,16 +2,14 @@ import io.javalin.Javalin
 import io.javalin.http.staticfiles.Location
 import io.javalin.websocket.WsContext
 import mu.KotlinLogging
-import net.glxn.qrgen.core.image.ImageType
-import net.glxn.qrgen.javase.QRCode
 import org.eclipse.jetty.websocket.api.Session
+import qrcode.QRCode
 import java.awt.*
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
-import java.io.ByteArrayInputStream
+import java.awt.image.BufferedImage
 import java.net.InetAddress
 import java.util.concurrent.ConcurrentHashMap
-import javax.imageio.ImageIO
 import kotlin.system.exitProcess
 
 data class Collaboration(var doc: String = "", val sessions: MutableSet<Session> = ConcurrentHashMap.newKeySet())
@@ -23,12 +21,11 @@ object WebRemoteControl {
     val urls = LinkedHashMap<String, String>()
 
     fun showQRCode(parent: Frame, s: String) {
-        val qrdim = 250
-        val ba = QRCode.from(s).to(ImageType.PNG).withSize(qrdim, qrdim).stream().toByteArray()
-        val bi= ImageIO.read(ByteArrayInputStream(ba))
+        val bi = QRCode.ofRoundedSquares().withSize(10).build(s).render().nativeImage() as BufferedImage
+
         val can = object : Canvas() {
             override fun paint(g: Graphics) = let { g.drawImage(bi, 0, 0, this) ; Unit}
-            init { setSize(qrdim, qrdim) }
+            init { setSize(bi.width, bi.height) }
         }
 
         val dia = object : Dialog(parent, "QR code", true) {

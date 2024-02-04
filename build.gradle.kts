@@ -4,9 +4,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
 version = "1.0-SNAPSHOT"
-val cPlatforms = listOf("mac") // compile for these platforms. "mac", "mac-aarch64", "linux", "win"
-val kotlinVersion = "1.8.20"
-val javaVersion = 19 // 19 doesn't work yet, bug with font manager on mac
+val cPlatforms = listOf("mac", "linux", "win") // compile for these platforms. "mac", "mac-aarch64", "linux", "win"
+val kotlinVersion = "1.9.22"
+val javaVersion = 21
 println("Current Java version: ${JavaVersion.current()}")
 if (JavaVersion.current().majorVersion.toInt() != javaVersion) throw GradleException("Use Java $javaVersion")
 
@@ -17,11 +17,18 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "1.8.20"
+    kotlin("jvm") version "1.9.22"
     id("idea")
     application
     id("com.github.ben-manes.versions") version "0.45.0"
     id("org.beryx.runtime") version "1.13.0"
+}
+
+idea {
+    module {
+        isDownloadJavadoc = true
+        isDownloadSources = true
+    }
 }
 
 kotlin {
@@ -43,10 +50,10 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
     implementation("io.github.microutils:kotlin-logging:3.0.5")
-    implementation("org.slf4j:slf4j-simple:2.0.7") // no colors, everything stderr
-    implementation("io.javalin:javalin:5.4.2") { exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8") }
+    implementation("org.slf4j:slf4j-simple:2.0.11") // no colors, everything stderr
+    implementation("io.javalin:javalin:6.0.0") { exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8") }
     implementation("org.webjars:hammerjs:2.0.8")
-    implementation("com.github.kenglxn.QRGen:javase:3.0.1")
+    implementation("io.github.g0dkar:qrcode-kotlin:4.1.1")
 }
 
 runtime {

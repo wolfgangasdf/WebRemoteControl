@@ -54,7 +54,7 @@ class SocketInstruct {
     fun instruct(message: String, ctx: WsContext) {
         instructions = message.split("\t")
         inputKind = instructions[0]
-        logger.debug("instruct: inputKind=$inputKind")
+        // logger.debug("instruct: inputKind=$inputKind")
         when(inputKind) {
             "move" -> move(instructions[1].toInt(), instructions[2].toInt())
             "tap" -> robotHandle.tap()
