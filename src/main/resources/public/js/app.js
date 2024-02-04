@@ -15,6 +15,12 @@ var socketlastrestartms = 0;
 var socketlastfailms = 0;
 var fbloadedfiles = false; // to keep highlight until folder changed
 
+var wsProtocol = 'ws://';
+if (window.location.protocol === 'https:') {
+     wsProtocol = 'wss://';
+}
+
+
 function debug(s) {
     console.log("[" + window.location.hash.substr(1) + "] " + s);
 }
@@ -169,7 +175,7 @@ function showPage(idx, reloadcontent=false) {
 // init websocket. call after connection loss.
 function initwebsocket() {
     debug("initwebsocket");
-    socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/docs/" + window.location.hash.substr(1));
+    socket = new WebSocket(wsProtocol +"" + window.location.hostname + ":" + window.location.port + "/docs/" + window.location.hash.substr(1));
     socketlastrestartms = +new Date();
     debug("initwebsocket: socket created " + socket.readyState);
     socket.onopen = function(){
