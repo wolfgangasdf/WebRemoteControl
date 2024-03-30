@@ -16,6 +16,11 @@ buildscript {
     }
 }
 
+tasks.wrapper {
+    distributionType = Wrapper.DistributionType.BIN
+    gradleVersion = "8.7"
+}
+
 plugins {
     kotlin("jvm") version "1.9.22"
     id("idea")
@@ -115,9 +120,4 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
         isNonStable(candidate.version)
     }
     gradleReleaseChannel = "current"
-}
-
-tasks.wrapper {
-    distributionType = Wrapper.DistributionType.BIN
-    gradleVersion = "8.6"
 }
