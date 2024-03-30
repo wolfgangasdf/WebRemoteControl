@@ -16,6 +16,11 @@ buildscript {
     }
 }
 
+tasks.wrapper {
+    distributionType = Wrapper.DistributionType.BIN
+    gradleVersion = "8.7"
+}
+
 plugins {
     kotlin("jvm") version "1.9.22"
     id("idea")
