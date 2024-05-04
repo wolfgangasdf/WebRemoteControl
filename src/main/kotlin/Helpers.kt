@@ -12,8 +12,9 @@ private val logger = KotlinLogging.logger {}
 
 object Helpers {
     fun isMac() = System.getProperty("os.name").lowercase().contains("mac")
-    //fun isLinux() = System.getProperty("os.name").toLowerCase().matches("(.*nix)|(.*nux)".toRegex())
+    fun isLinux() = System.getProperty("os.name").lowercase().matches("(.*nix)|(.*nux)".toRegex())
     fun isWin() = System.getProperty("os.name").lowercase().contains("win")
+    fun isWinLin() = isWin() || isLinux()
     fun openURL(url: String) {
         if (Desktop.isDesktopSupported() && url != "") {
             val desktop = Desktop.getDesktop()

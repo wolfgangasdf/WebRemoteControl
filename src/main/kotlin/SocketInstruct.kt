@@ -26,24 +26,24 @@ class SocketInstruct {
         "bescape" to listOf(KeyEvent.VK_ESCAPE),
         "bclosetab" to listOf(if (Helpers.isMac()) KeyEvent.VK_META else KeyEvent.VK_CONTROL, KeyEvent.VK_W),
         "quit" to  if (Helpers.isMac()) listOf(KeyEvent.VK_META, KeyEvent.VK_Q) else listOf(KeyEvent.VK_ALT, KeyEvent.VK_F4),
-        "vlcfullscreen" to (if (Helpers.isWin()) listOf(KeyEvent.VK_F) else listOf(KeyEvent.VK_META, KeyEvent.VK_F)),
-        "vlcvoldown" to (if (Helpers.isWin()) listOf(KeyEvent.VK_CONTROL, KeyEvent.VK_DOWN) else listOf(KeyEvent.VK_DOWN)),
-        "vlcvolup" to (if (Helpers.isWin()) listOf(KeyEvent.VK_CONTROL, KeyEvent.VK_UP) else listOf(KeyEvent.VK_UP)),
+        "vlcfullscreen" to (if (Helpers.isWinLin()) listOf(KeyEvent.VK_F) else listOf(KeyEvent.VK_META, KeyEvent.VK_F)),
+        "vlcvoldown" to (if (Helpers.isWinLin()) listOf(KeyEvent.VK_CONTROL, KeyEvent.VK_DOWN) else listOf(KeyEvent.VK_DOWN)),
+        "vlcvolup" to (if (Helpers.isWinLin()) listOf(KeyEvent.VK_CONTROL, KeyEvent.VK_UP) else listOf(KeyEvent.VK_UP)),
         "vlcspace" to listOf(KeyEvent.VK_SPACE),
-        "vlcjbbb" to (if (Helpers.isWin()) listOf(KeyEvent.VK_ALT, KeyEvent.VK_CONTROL, KeyEvent.VK_LEFT) else
+        "vlcjbbb" to (if (Helpers.isWinLin()) listOf(KeyEvent.VK_ALT, KeyEvent.VK_CONTROL, KeyEvent.VK_LEFT) else
         listOf(KeyEvent.VK_META, KeyEvent.VK_SHIFT, KeyEvent.VK_ALT, KeyEvent.VK_LEFT)),
-        "vlcjfff" to (if (Helpers.isWin()) listOf(KeyEvent.VK_ALT, KeyEvent.VK_CONTROL, KeyEvent.VK_RIGHT) else
+        "vlcjfff" to (if (Helpers.isWinLin()) listOf(KeyEvent.VK_ALT, KeyEvent.VK_CONTROL, KeyEvent.VK_RIGHT) else
         listOf(KeyEvent.VK_META, KeyEvent.VK_SHIFT, KeyEvent.VK_ALT, KeyEvent.VK_RIGHT)),
-        "vlcjbb" to (if (Helpers.isWin()) listOf(KeyEvent.VK_CONTROL, KeyEvent.VK_LEFT) else
+        "vlcjbb" to (if (Helpers.isWinLin()) listOf(KeyEvent.VK_CONTROL, KeyEvent.VK_LEFT) else
         listOf(KeyEvent.VK_META, KeyEvent.VK_SHIFT, KeyEvent.VK_LEFT)),
-        "vlcjff" to (if (Helpers.isWin()) listOf(KeyEvent.VK_CONTROL, KeyEvent.VK_RIGHT) else
+        "vlcjff" to (if (Helpers.isWinLin()) listOf(KeyEvent.VK_CONTROL, KeyEvent.VK_RIGHT) else
         listOf(KeyEvent.VK_META, KeyEvent.VK_SHIFT, KeyEvent.VK_RIGHT)),
-        "vlcjb" to (if (Helpers.isWin()) listOf(KeyEvent.VK_ALT, KeyEvent.VK_LEFT) else
+        "vlcjb" to (if (Helpers.isWinLin()) listOf(KeyEvent.VK_ALT, KeyEvent.VK_LEFT) else
         listOf(KeyEvent.VK_META, KeyEvent.VK_ALT, KeyEvent.VK_LEFT)),
-        "vlcjf" to (if (Helpers.isWin()) listOf(KeyEvent.VK_ALT, KeyEvent.VK_RIGHT) else
+        "vlcjf" to (if (Helpers.isWinLin()) listOf(KeyEvent.VK_ALT, KeyEvent.VK_RIGHT) else
         listOf(KeyEvent.VK_META, KeyEvent.VK_ALT, KeyEvent.VK_RIGHT)),
-        "vlccaudio" to listOf(if (Helpers.isWin()) KeyEvent.VK_B else KeyEvent.VK_L),
-        "vlccsubti" to listOf(if (Helpers.isWin()) KeyEvent.VK_V else KeyEvent.VK_S),
+        "vlccaudio" to listOf(if (Helpers.isWinLin()) KeyEvent.VK_B else KeyEvent.VK_L),
+        "vlccsubti" to listOf(if (Helpers.isWinLin()) KeyEvent.VK_V else KeyEvent.VK_S),
         "vlccaspect" to listOf(KeyEvent.VK_A),
         "vlcccrop" to listOf(KeyEvent.VK_C),
         "vlccaudev" to listOf(KeyEvent.VK_SHIFT, KeyEvent.VK_A),
