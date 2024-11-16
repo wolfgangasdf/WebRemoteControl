@@ -1,4 +1,5 @@
 {
     "name": "",
-    "short_name": ""
+    "short_name": "",
+    "display": "standalone"
 }

@@ -5,7 +5,7 @@ import java.util.*
 
 version = "1.0-SNAPSHOT"
 val cPlatforms = listOf("mac", "linux", "win") // compile for these platforms. "mac", "mac-aarch64", "linux", "win"
-val kotlinVersion = "1.9.22"
+val kotlinVersion = "2.0.21"
 val javaVersion = 21
 println("Current Java version: ${JavaVersion.current()}")
 if (JavaVersion.current().majorVersion.toInt() != javaVersion) throw GradleException("Use Java $javaVersion")
@@ -22,11 +22,11 @@ tasks.wrapper {
 }
 
 plugins {
-    kotlin("jvm") version "1.9.22"
+    kotlin("jvm") version "2.0.21"
     id("idea")
     application
     id("com.github.ben-manes.versions") version "0.45.0"
-    id("org.beryx.runtime") version "1.13.0"
+    id("org.beryx.runtime") version "1.13.1"
 }
 
 idea {
@@ -55,10 +55,10 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
     implementation("io.github.microutils:kotlin-logging:3.0.5")
-    implementation("org.slf4j:slf4j-simple:2.0.11") // no colors, everything stderr
-    implementation("io.javalin:javalin:6.0.0") { exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8") }
+    implementation("org.slf4j:slf4j-simple:2.0.16") // no colors, everything stderr
+    implementation("io.javalin:javalin:6.3.0") { exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8") }
     implementation("org.webjars:hammerjs:2.0.8")
-    implementation("io.github.g0dkar:qrcode-kotlin:4.1.1")
+    implementation("io.github.g0dkar:qrcode-kotlin:4.2.0")
 }
 
 runtime {

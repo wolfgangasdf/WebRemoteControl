@@ -65,7 +65,7 @@ object Helpers {
             when(resource.protocol) {
                 "file" -> try {
                     d = Date(File(resource.toURI()).lastModified())
-                } catch (ignored: URISyntaxException) {
+                } catch (_: URISyntaxException) {
                 }
                 "jar" -> {
                     val path = resource.path
@@ -83,8 +83,8 @@ object Helpers {
                             val zeTimeDate = Date(zeTimeLong)
                             d = zeTimeDate
                         }
-                    } catch (ignored: IOException) {
-                    } catch (ignored: RuntimeException) {
+                    } catch (_: IOException) {
+                    } catch (_: RuntimeException) {
                     }
 
                 }

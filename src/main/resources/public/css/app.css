@@ -30,6 +30,10 @@ html, body {
     width:20%;
     height:100%;
     font-size: 5vh;
+   text-decoration: underline;
+   appearance: none; /* hide arrows */
+   -webkit-appearance: none;
+   -moz-appearance: none;
 }
 .contentitem {
     width:100%;
@@ -60,12 +64,16 @@ html, body {
 .buttons{
     width:20%;
     height:100%;
-    font-size: 5vh;
+    font-size: 4vh;
+    -webkit-appearance: none; /* ios padding */
+    padding: 0 !important;
 }
 .buttons6{
     width:16%;
     height:100%;
-    font-size: 5vh;
+    font-size: 4vh;
+    -webkit-appearance: none; /* ios padding */
+    padding: 0 !important;
 }
 .tallrow{
     width:100%;
