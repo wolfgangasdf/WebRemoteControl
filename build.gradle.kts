@@ -1,14 +1,16 @@
 
 import org.gradle.kotlin.dsl.support.zipTo
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
 version = "1.0-SNAPSHOT"
-val cPlatforms = listOf("mac", "linux", "win") // compile for these platforms. "mac", "mac-aarch64", "linux", "win"
-val kotlinVersion = "2.0.21"
-val javaVersion = 21
-println("Current Java version: ${JavaVersion.current()}")
-if (JavaVersion.current().majorVersion.toInt() != javaVersion) throw GradleException("Use Java $javaVersion")
+val cPlatforms = listOf("mac-aarch64", "linux", "win") // compile for these platforms. "mac", "mac-aarch64", "linux", "win"
+val kotlinVersion = "2.1.10"
+val needMajorJavaVersion = 21
+val javaVersion = System.getProperty("java.version")!!
+println("Current Java version: $javaVersion")
+if (JavaVersion.current().majorVersion.toInt() != needMajorJavaVersion) throw GradleException("Use Java $needMajorJavaVersion")
 
 buildscript {
     repositories {
@@ -18,14 +20,14 @@ buildscript {
 
 tasks.wrapper {
     distributionType = Wrapper.DistributionType.BIN
-    gradleVersion = "8.7"
+    gradleVersion = "8.12.1"
 }
 
 plugins {
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "2.1.10"
     id("idea")
     application
-    id("com.github.ben-manes.versions") version "0.45.0"
+    id("com.github.ben-manes.versions") version "0.52.0"
     id("org.beryx.runtime") version "1.13.1"
 }
 
@@ -37,7 +39,7 @@ idea {
 }
 
 kotlin {
-    jvmToolchain(javaVersion)
+    jvmToolchain(needMajorJavaVersion)
 }
 
 application {
@@ -56,13 +58,13 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
     implementation("io.github.microutils:kotlin-logging:3.0.5")
     implementation("org.slf4j:slf4j-simple:2.0.16") // no colors, everything stderr
-    implementation("io.javalin:javalin:6.3.0") { exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8") }
+    implementation("io.javalin:javalin:6.4.0") { exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8") }
     implementation("org.webjars:hammerjs:2.0.8")
     implementation("io.github.g0dkar:qrcode-kotlin:4.2.0")
 }
 
 runtime {
-    imageZip.set(project.file("${project.buildDir}/image-zip/webremotecontrol"))
+    imageZip.set(project.file("${project.layout.buildDirectory.get().asFile.path}/image-zip/webremotecontrol"))
     options.set(listOf("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages"))
     modules.set(listOf("java.desktop", "java.logging", "java.prefs", "java.xml"))
 
@@ -97,14 +99,14 @@ runtime {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "$javaVersion"
+    compilerOptions.jvmTarget.set(JvmTarget.fromTarget("$needMajorJavaVersion"))
 }
 
 task("dist") {
     dependsOn("runtimeZip")
     doLast {
         println("Deleting build/[jre,install]")
-        project.delete(project.runtime.jreDir.get(), "${project.buildDir.path}/install")
+        project.delete(project.runtime.jreDir.get(), "${project.layout.buildDirectory.get().asFile.path}/install")
         println("Created zips in build/image-zip")
     }
 }

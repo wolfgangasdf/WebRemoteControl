@@ -1,7 +1,7 @@
 * {
     margin: 0px;
     padding: 0px;
-    font-family: system-ui;
+    font-family: 'arial';
 }
 
 html, body {
@@ -29,7 +29,7 @@ html, body {
 .menu {
     width:20%;
     height:100%;
-    font-size: 5vh;
+    font-size: xx-large;
    text-decoration: underline;
    appearance: none; /* hide arrows */
    -webkit-appearance: none;
@@ -59,19 +59,19 @@ html, body {
 .placeholder {
     flex-grow:1;
     height:100%;
-    font-size: 5vh;
+    font-size: xx-large;
 }
 .buttons{
     width:20%;
     height:100%;
-    font-size: 4vh;
+    font-size: xx-large;
     -webkit-appearance: none; /* ios padding */
     padding: 0 !important;
 }
 .buttons6{
     width:16%;
     height:100%;
-    font-size: 4vh;
+    font-size: xx-large;
     -webkit-appearance: none; /* ios padding */
     padding: 0 !important;
 }
@@ -83,7 +83,7 @@ html, body {
 .buttonslarge{
     width:40%;
     height:100%;
-    font-size: 10vh;
+    font-size: xx-large;
 }
 
 .trackpad-area{
@@ -96,7 +96,7 @@ html, body {
 #charinput{
     width:20%;
     height:90%;
-    font-size: large;
+    font-size: xx-large;
 }
 
 .flist {
@@ -119,20 +119,23 @@ html, body {
     align:left;
 }
 .ftable input {
-    height:10vh; width:100%; border:0; font-size: 3.5vh; text-align: left;
+    height:10vh; width:100%; border:0; text-align: left;
+	font-size: x-large;
     background-color:inherit;
 }
 .hdelete {
     height:100%;
-    font-size: 5vh;
+    font-size: x-large;
     margin: 1%;
+    padding: 0;
+    -webkit-appearance: none; /* ios padding */
 }
 .highlight {
     background-color: lightgreen;
 }
 
 #currentpath {
-    font-size: 3vh;
+    font-size: large;
     width: 80%;
     height: 10vh;
     overflow: hidden;

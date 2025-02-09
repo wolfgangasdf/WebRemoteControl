@@ -5,7 +5,6 @@ var clearqueuems = 2000; // clear socket queue if disconnected after this
 var intervalms = 25; // interval ms for sending data over socket (25)
 
 // internal
-var lastInfo = "";
 var socket = null;
 var hammer = null;
 var hammertr = null;
@@ -247,15 +246,6 @@ function hdelete(i) {
 
 // handles queue<>socket communication, reconnects
 setInterval(function(){
-    var info = "";
-    if (socket == null)
-        info = "0";
-    else
-        if (socket.readyState != socket.OPEN || socketrestarting) info = "E";
-    if (info != lastInfo) {
-        document.getElementById('info').innerHTML = info;
-        lastInfo = info;
-    }
     //debug("interval: len=" + queue.length + " socket=" + socket + " srstate=" + socket.readyState);
     if (queue.length != 0 && socket != null) {
         var msnow = +new Date();
